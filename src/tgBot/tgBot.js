@@ -47,6 +47,10 @@ const tgBot = (token) => {
             await dailyPublicRemind(msg?.from?.username);
             return;
         }
+        if (text === COMMAND.CHAT_ID || text === COMMAND.CHAT_ID + BOT_NAME) {
+            await utils.getChatId()
+            return
+        }
         //QUOTES////////////////////////////////////////////////////////////////////////////////////////////////////
         if (text?.length >= 1) {
             await task.add();

@@ -14,7 +14,7 @@ class TgBotUtilsImpl {
     }
 
     async permissionValidator() {
-        if(AVAILABLE_USERS.indexOf(this.msg.from.username) === -1){
+        if (AVAILABLE_USERS.indexOf(this.msg.from.username) === -1) {
             await this.bot.sendMessage(this.chatId, strings.you_do_not_have_access_to_this_bot);
             return true
         }
@@ -47,13 +47,13 @@ class TgBotUtilsImpl {
                         );
                         return;
                     }
-                    if(taskData?.yesterday || taskData?.today){
-                    await this.bot.sendMessage(
-                        this.chatId,
-                        `<b>Что делал:</b>\n${taskData.yesterday}\n\n<b>Что буду делать:</b>\n${taskData.today || strings.empty+"\n"+ strings.send_a_message_and_it_will_be_added_here}`,
-                        {parse_mode: 'HTML'},
-                    );}
-                    else {
+                    if (taskData?.yesterday || taskData?.today) {
+                        await this.bot.sendMessage(
+                            this.chatId,
+                            `<b>Что делал:</b>\n${taskData.yesterday}\n\n<b>Что буду делать:</b>\n${taskData.today || strings.empty + "\n" + strings.send_a_message_and_it_will_be_added_here}`,
+                            {parse_mode: 'HTML'},
+                        );
+                    } else {
                         await this.bot.sendMessage(
                             this.chatId,
                             genRandomErrorMessageForPrivateEmptyDaily(),
@@ -68,6 +68,10 @@ class TgBotUtilsImpl {
                 );
             }
         });
+    }
+
+    async getChatId() {
+        await this.bot.sendMessage(this.chatId, this.chatId);
     }
 }
 
