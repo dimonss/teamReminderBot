@@ -7,7 +7,7 @@ import {BUILD_TYPES} from "../constants.js";
 import cron from 'node-cron';
 import dailyGroupReport from './schedules/dailyGroupReport.js'
 import dailyPublicRemind from "./schedules/dailyPublicRemind.js";
-import dailyPrivateRemind from "./schedules/dailyPrivatRemind.js";
+import dailyPrivateRemind from "./schedules/dailyPrivateRemind.js";
 
 const tgBot = (token) => {
     const bot = new TelegramApi(token, {polling: true});

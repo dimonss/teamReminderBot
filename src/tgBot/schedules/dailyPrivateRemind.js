@@ -4,6 +4,7 @@ import strings from "../../constants/strings.js";
 import UserSQL from "../../db/userSQL.js";
 import userSQL from "../../db/userSQL.js";
 import {getRandomRequestMessageForPrivateEmptyDaily} from "../../utils/rangomStringsUtils.js";
+import {TELL_ME_THE_STATUS_STIKER} from "../../constants.js";
 
 const dailyPrivateRemind = async () => {
     try {
@@ -31,6 +32,7 @@ const dailyPrivateRemind = async () => {
                                             return
                                         }
                                         if (data?.chatId) {
+                                            await this.bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STIKER);
                                             await bot.sendMessage(data.chatId, getRandomRequestMessageForPrivateEmptyDaily())
                                         }
                                     })
