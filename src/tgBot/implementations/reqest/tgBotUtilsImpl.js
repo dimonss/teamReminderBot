@@ -1,0 +1,74 @@
+import {TELL_ME_THE_STATUS_STIKER} from '../../../constants.js';
+import UserSQL from '../../../db/userSQL.js';
+import TaskSQL from "../../../db/taskSQL.js";
+import strings from "../../../constants/strings.js";
+import {genRandomErrorMessageForPrivateEmptyDaily} from "../../../utils/rangomStringsUtils.js";
+import {AVAILABLE_USERS} from "../../../index.js";
+
+class TgBotUtilsImpl {
+    constructor(bot, msg) {
+        this.bot = bot;
+        this.chatId = msg?.chat?.id;
+        this.text = msg.text;
+        this.msg = msg;
+    }
+
+    async permissionValidator() {
+        if(AVAILABLE_USERS.indexOf(this.msg.from.username) === -1){
+            await this.bot.sendMessage(this.chatId, strings.you_do_not_have_access_to_this_bot);
+            return true
+        }
+    }
+
+    async start() {
+        await this.bot.sendSticker(this.chatId, TELL_ME_THE_STATUS_STIKER);
+        await this.bot.sendMessage(
+            this.chatId,
+            strings.introductory_instructions,
+        );
+    }
+
+    async startForGroup() {
+        await this.bot.sendSticker(this.chatId, TELL_ME_THE_STATUS_STIKER);
+    }
+
+    async info() {
+        UserSQL.findByChatId(this.msg.from.username, async (error, data) => {
+            if (error) {
+                await this.bot.sendMessage(this.chatId, strings.ups);
+                return;
+            }
+            if (data) {
+                TaskSQL.getTodayReport(data?.id, async (error, taskData) => {
+                    if (error) {
+                        await this.bot.sendMessage(
+                            this.chatId,
+                            strings.ups,
+                        );
+                        return;
+                    }
+                    if(taskData?.yesterday || taskData?.today){
+                    await this.bot.sendMessage(
+                        this.chatId,
+                        `<b>Что делал:</b>\n${taskData.yesterday}\n\n<b>Что буду делать:</b>\n${taskData.today || strings.empty+"\n"+ strings.send_a_message_and_it_will_be_added_here}`,
+                        {parse_mode: 'HTML'},
+                    );}
+                    else {
+                        await this.bot.sendMessage(
+                            this.chatId,
+                            genRandomErrorMessageForPrivateEmptyDaily(),
+                        );
+                    }
+                })
+
+            } else {
+                await this.bot.sendMessage(
+                    this.chatId,
+                    strings.you_are_not_in_the_system,
+                );
+            }
+        });
+    }
+}
+
+export default TgBotUtilsImpl;
