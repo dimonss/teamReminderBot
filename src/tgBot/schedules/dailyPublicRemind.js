@@ -6,7 +6,7 @@ import {TELL_ME_THE_STATUS_STIKER, ZERO_BUGS} from "../../constants.js";
 
 const dailyPublicRemind = async (username) => {
     try {
-        if (username === AVAILABLE_USERS[0]) {
+        if (username !== AVAILABLE_USERS[0]) {
             await bot.sendMessage(GROUP_CHAT_ID, strings.command_not_available)
             return
         }
