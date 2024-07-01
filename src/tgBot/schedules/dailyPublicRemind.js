@@ -4,9 +4,9 @@ import strings from "../../constants/strings.js";
 import UserSQL from "../../db/userSQL.js";
 import {TELL_ME_THE_STATUS_STIKER, ZERO_BUGS} from "../../constants.js";
 
-const dailyPublicRemind = async (username) => {
+const dailyPublicRemind = async (data) => {
     try {
-        if (username !== AVAILABLE_USERS[0]) {
+        if (data?.username && data?.username !== AVAILABLE_USERS[0]) {
             await bot.sendMessage(GROUP_CHAT_ID, strings.command_not_available)
             return
         }

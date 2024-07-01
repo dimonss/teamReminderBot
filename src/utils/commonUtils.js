@@ -10,9 +10,15 @@ export const checkAuth = (req, res) => {
     return true;
 };
 
+const addHours = (date, hours) => {
+    date.setHours(date.getHours() + hours);
+    return date;
+};
+
 export const getCurrentDate = () => {
-    const date = new Date();
-    return (date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear());
+    const currentDateUTC = new Date();
+    const currentDateUTCPlus6 = addHours(new Date(currentDateUTC), 6);
+    return (currentDateUTCPlus6.getDate() + '.' + (currentDateUTCPlus6.getMonth() + 1) + '.' + currentDateUTCPlus6.getFullYear());
 };
 
 export const getCyrillicUsername = (username) => {

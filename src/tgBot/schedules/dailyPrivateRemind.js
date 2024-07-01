@@ -1,6 +1,5 @@
 import TaskSQL from "../../db/taskSQL.js";
-import {AVAILABLE_USERS, bot, GROUP_CHAT_ID} from "../../index.js";
-import strings from "../../constants/strings.js";
+import {AVAILABLE_USERS, bot} from "../../index.js";
 import UserSQL from "../../db/userSQL.js";
 import userSQL from "../../db/userSQL.js";
 import {getRandomRequestMessageForPrivateEmptyDaily} from "../../utils/rangomStringsUtils.js";
@@ -10,15 +9,13 @@ const dailyPrivateRemind = async () => {
     try {
         TaskSQL.allToday(async (error, tasks) => {
             if (error) {
-                await bot.sendMessage(GROUP_CHAT_ID, strings.ups)
                 return
             }
-            let userList = AVAILABLE_USERS.slice(0);
+            let userList = AVAILABLE_USERS.slice(0); //for copy object
             if (tasks.length) {
                 tasks?.forEach((item, index) => {
                     UserSQL.getUser(item.userId, async (error, user) => {
                         if (error) {
-                            await bot.sendMessage(GROUP_CHAT_ID, strings.ups);
                             return
                         }
                         if (item?.yesterday) {
@@ -32,7 +29,7 @@ const dailyPrivateRemind = async () => {
                                             return
                                         }
                                         if (data?.chatId) {
-                                            await this.bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STIKER);
+                                            await bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STIKER);
                                             await bot.sendMessage(data.chatId, getRandomRequestMessageForPrivateEmptyDaily())
                                         }
                                     })
@@ -48,7 +45,11 @@ const dailyPrivateRemind = async () => {
                         if (error) {
                             return
                         }
-                        await bot.sendMessage(data.chatId, getRandomRequestMessageForPrivateEmptyDaily())
+                        //if user have chat_id in db
+                        if (data?.chatId) {
+                            await bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STIKER);
+                            await bot.sendMessage(data.chatId, getRandomRequestMessageForPrivateEmptyDaily())
+                        }
                     })
                 })
             }
@@ -56,7 +57,8 @@ const dailyPrivateRemind = async () => {
 
         });
     } catch (e) {
-        await bot.sendMessage(GROUP_CHAT_ID, strings.ups)
+        console.log("Error");
+        console.log(e);
     }
 }
 export default dailyPrivateRemind

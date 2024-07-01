@@ -44,7 +44,7 @@ const tgBot = (token) => {
             return;
         }
         if (text === COMMAND.REMIND + BOT_NAME) {
-            await dailyPublicRemind(msg?.from?.username);
+            await dailyPublicRemind({username: msg?.from?.username || 'withoutUsername'});
             return;
         }
         if (text === COMMAND.CHAT_ID || text === COMMAND.CHAT_ID + BOT_NAME) {
