@@ -1,12 +1,16 @@
 import TaskSQL from "../../db/taskSQL.js";
-import {GROUP_CHAT_ID, bot} from "../../index.js";
+import {GROUP_CHAT_ID, bot, AVAILABLE_USERS} from "../../index.js";
 import strings from "../../constants/strings.js";
 import UserSQL from "../../db/userSQL.js";
 import {getRandomErrorMessageForPublicEmptyDaily} from "../../utils/rangomStringsUtils.js";
 import {getCyrillicUsername} from "../../utils/commonUtils.js";
 
-const dailyGroupReport = async () => {
+const dailyGroupReport = async (data) => {
     try {
+        if (data?.username && data?.username !== AVAILABLE_USERS[0]) {
+            await bot.sendMessage(GROUP_CHAT_ID, strings.command_not_available)
+            return
+        }
         TaskSQL.allToday(async (error, tasks) => {
             if (error) {
                 await bot.sendMessage(GROUP_CHAT_ID, strings.ups)

@@ -40,11 +40,15 @@ const tgBot = (token) => {
             return;
         }
         if (text === COMMAND.INFO + BOT_NAME) {
-            await dailyGroupReport()
+            await dailyGroupReport({username: msg?.from?.username || 'withoutUsername'})
             return;
         }
         if (text === COMMAND.REMIND + BOT_NAME) {
             await dailyPublicRemind({username: msg?.from?.username || 'withoutUsername'});
+            return;
+        }
+        if (text === COMMAND.REMIND_PRIVATE || text === COMMAND.REMIND_PRIVATE + BOT_NAME) {
+            await dailyPrivateRemind({username: msg?.from?.username || 'withoutUsername'});
             return;
         }
         if (text === COMMAND.CHAT_ID || text === COMMAND.CHAT_ID + BOT_NAME) {
