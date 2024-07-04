@@ -33,41 +33,47 @@ class TgBotUtilsImpl {
     }
 
     async info() {
-        UserSQL.findByChatId(this.msg.from.username, async (error, data) => {
-            if (error) {
-                await this.bot.sendMessage(this.chatId, strings.ups);
-                return;
-            }
-            if (data) {
-                TaskSQL.getTodayReport(data?.id, async (error, taskData) => {
-                    if (error) {
-                        await this.bot.sendMessage(
-                            this.chatId,
-                            strings.ups,
-                        );
-                        return;
-                    }
-                    if (taskData?.yesterday || taskData?.today) {
-                        await this.bot.sendMessage(
-                            this.chatId,
-                            `<b>Что делал:</b>\n${taskData.yesterday}\n\n<b>Что буду делать:</b>\n${taskData.today || strings.empty + "\n" + strings.send_a_message_and_it_will_be_added_here}`,
-                            {parse_mode: 'HTML'},
-                        );
-                    } else {
-                        await this.bot.sendMessage(
-                            this.chatId,
-                            genRandomErrorMessageForPrivateEmptyDaily(),
-                        );
-                    }
-                })
+        try {
+            UserSQL.findByChatId(this.msg.from.username, async (error, data) => {
+                if (error) {
+                    await this.bot.sendMessage(this.chatId, strings.ups);
+                    return;
+                }
+                if (data) {
+                    TaskSQL.getTodayReport(data?.id, async (error, taskData) => {
+                        if (error) {
+                            await this.bot.sendMessage(
+                                this.chatId,
+                                strings.ups,
+                            );
+                            return;
+                        }
+                        if (taskData?.yesterday || taskData?.today) {
+                            await this.bot.sendMessage(
+                                this.chatId,
+                                `<b>Что делал:</b>\n${taskData.yesterday}\n\n<b>Что буду делать:</b>\n${taskData.today || strings.empty + "\n" + strings.send_a_message_and_it_will_be_added_here}`,
+                                {parse_mode: 'HTML'},
+                            );
+                        } else {
+                            await this.bot.sendMessage(
+                                this.chatId,
+                                genRandomErrorMessageForPrivateEmptyDaily(),
+                            );
+                        }
+                    })
 
-            } else {
-                await this.bot.sendMessage(
-                    this.chatId,
-                    strings.you_are_not_in_the_system,
-                );
-            }
-        });
+                } else {
+                    await this.bot.sendMessage(
+                        this.chatId,
+                        strings.you_are_not_in_the_system,
+                    );
+                }
+            })
+        } catch (e) {
+            console.log("/info command error");
+            console.log(e);
+            await this.bot.sendMessage(this.chatId, strings.ups);
+        }
     }
 
     async getChatId() {
