@@ -16,4 +16,5 @@ export const BUILD_TYPES = {
 export const CHAT_TYPE = {
     GROUP: 'group',
     PRIVATE: 'private',
+    SUPERGROUP: 'supergroup',
 }

@@ -81,7 +81,7 @@ class TgBotUtilsImpl {
     }
 
     async tegAll() {
-        if (this.msg.chat.type === CHAT_TYPE.GROUP) {
+        if (this.msg.chat.type === CHAT_TYPE.GROUP || this.msg.chat.type === CHAT_TYPE.SUPERGROUP) {
             const allUsersString = "@" + AVAILABLE_USERS.filter(item => item !== this.msg.from.username)
                 .reduce((outputString, item) => `${outputString} @${item}`)
             await this.bot.sendMessage(this.chatId, allUsersString);
