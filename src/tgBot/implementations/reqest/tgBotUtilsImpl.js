@@ -79,6 +79,12 @@ class TgBotUtilsImpl {
     async getChatId() {
         await this.bot.sendMessage(this.chatId, this.chatId);
     }
+
+    async tegAll() {
+        const allUsersString = "@" + AVAILABLE_USERS.filter(item => item !== this.msg.from.username)
+            .reduce((outputString, item) => `${outputString} @${item}`)
+        await this.bot.sendMessage(this.chatId, allUsersString);
+    }
 }
 
 export default TgBotUtilsImpl;

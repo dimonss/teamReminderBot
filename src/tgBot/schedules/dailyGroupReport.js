@@ -28,7 +28,7 @@ const dailyGroupReport = async (data) => {
                                     `${getCyrillicUsername(user.name)}:\n\n` +
                                     `Что делал:\n${item?.yesterday}\n\n` +
                                     `Что буду делать:\n${item?.today || strings.empty}` +
-                                    `\n________________________________\n\n`
+                                    `\n_____________________________\n\n`
                             }
                             if (tasks.length === index + 1) {
                                 await bot.sendMessage(

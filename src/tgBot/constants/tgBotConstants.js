@@ -4,6 +4,7 @@ export const COMMAND = {
     CHAT_ID: '/chat_id',
     REMIND: '/remind',
     REMIND_PRIVATE: '/remind_private',
+    TEG_ALL: '/teg_all',
 };
 
 export const tgBotDisplayCommands = [
@@ -11,4 +12,5 @@ export const tgBotDisplayCommands = [
     {command: COMMAND.INFO, description: 'Информация дейлике'},
     {command: COMMAND.REMIND, description: 'Тегнуть всех кто не написал дейлик'},
     {command: COMMAND.REMIND_PRIVATE, description: 'Отписать в личку всех кто не написал дейлик'},
+    {command: COMMAND.TEG_ALL, description: 'Тегнуть всех участников команды'},
 ];

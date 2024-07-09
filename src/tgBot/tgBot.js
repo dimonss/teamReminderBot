@@ -55,6 +55,10 @@ const tgBot = (token) => {
             await utils.getChatId()
             return
         }
+        if (text === COMMAND.TEG_ALL || text === COMMAND.TEG_ALL + BOT_NAME) {
+            await utils.tegAll()
+            return
+        }
         //QUOTES////////////////////////////////////////////////////////////////////////////////////////////////////
         if (text?.length >= 1) {
             await task.add();
