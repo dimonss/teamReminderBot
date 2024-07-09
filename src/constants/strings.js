@@ -28,7 +28,8 @@ const strings = {
     work_is_not_wolf: "Работа не волк... Работа ворк... А волк это гулять...",
     write_anything: "Черкани ченить",
     you_are_not_in_the_system: "Вас нет в системе. Отправьте боту текущие задачи для регистрации в системе",
-    you_do_not_have_access_to_this_bot:  "У вас нет доступа к данному боту"
+    you_do_not_have_access_to_this_bot:  "У вас нет доступа к данному боту",
+    can_only_be_used_in_groups: "Можно использовать только в группах",
 };
 
 export default strings;

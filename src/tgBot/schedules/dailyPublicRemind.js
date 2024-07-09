@@ -2,7 +2,7 @@ import TaskSQL from "../../db/taskSQL.js";
 import {AVAILABLE_USERS, bot, GROUP_CHAT_ID} from "../../index.js";
 import strings from "../../constants/strings.js";
 import UserSQL from "../../db/userSQL.js";
-import {TELL_ME_THE_STATUS_STIKER, ZERO_BUGS} from "../../constants.js";
+import {TELL_ME_THE_STATUS_STICKER, ZERO_BUGS_STICKER} from "../../constants.js";
 
 const dailyPublicRemind = async (data) => {
     try {
@@ -29,13 +29,13 @@ const dailyPublicRemind = async (data) => {
                         if (tasks.length === index + 1) {
                             if (userList.length) {
                                 const responseMessage = userList.reduce((acc, item) => acc + '@' + item + ' ', '')
-                                await bot.sendSticker(GROUP_CHAT_ID, TELL_ME_THE_STATUS_STIKER);
+                                await bot.sendSticker(GROUP_CHAT_ID, TELL_ME_THE_STATUS_STICKER);
                                 await bot.sendMessage(
                                     GROUP_CHAT_ID,
                                     responseMessage
                                 )
                             } else {
-                                await bot.sendSticker(GROUP_CHAT_ID, ZERO_BUGS);
+                                await bot.sendSticker(GROUP_CHAT_ID, ZERO_BUGS_STICKER);
                                 await bot.sendMessage(
                                     GROUP_CHAT_ID,
                                     strings.congratulation
@@ -47,7 +47,7 @@ const dailyPublicRemind = async (data) => {
                 })
             } else {
                 const responseMessage = userList.reduce((acc, item) => acc + '@' + item + ' ', '')
-                await bot.sendSticker(GROUP_CHAT_ID, TELL_ME_THE_STATUS_STIKER);
+                await bot.sendSticker(GROUP_CHAT_ID, TELL_ME_THE_STATUS_STICKER);
                 await bot.sendMessage(
                     GROUP_CHAT_ID,
                     responseMessage

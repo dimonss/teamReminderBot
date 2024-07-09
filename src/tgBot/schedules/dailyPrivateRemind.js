@@ -3,7 +3,7 @@ import {AVAILABLE_USERS, bot, GROUP_CHAT_ID} from "../../index.js";
 import UserSQL from "../../db/userSQL.js";
 import userSQL from "../../db/userSQL.js";
 import {getRandomRequestMessageForPrivateEmptyDaily} from "../../utils/rangomStringsUtils.js";
-import {TELL_ME_THE_STATUS_STIKER} from "../../constants.js";
+import {TELL_ME_THE_STATUS_STICKER} from "../../constants.js";
 import strings from "../../constants/strings.js";
 
 const dailyPrivateRemind = async (data) => {
@@ -35,7 +35,7 @@ const dailyPrivateRemind = async (data) => {
                                             return
                                         }
                                         if (data?.chatId) {
-                                            await bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STIKER);
+                                            await bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STICKER);
                                             await bot.sendMessage(data.chatId, getRandomRequestMessageForPrivateEmptyDaily())
                                         }
                                     })
@@ -53,7 +53,7 @@ const dailyPrivateRemind = async (data) => {
                         }
                         //if user have chat_id in db
                         if (data?.chatId) {
-                            await bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STIKER);
+                            await bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STICKER);
                             await bot.sendMessage(data.chatId, getRandomRequestMessageForPrivateEmptyDaily())
                         }
                     })

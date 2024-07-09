@@ -1,4 +1,4 @@
-import {TELL_ME_THE_STATUS_STIKER} from '../../../constants.js';
+import {CHAT_TYPE, TELL_ME_THE_STATUS_STICKER} from '../../../constants.js';
 import UserSQL from '../../../db/userSQL.js';
 import TaskSQL from "../../../db/taskSQL.js";
 import strings from "../../../constants/strings.js";
@@ -21,7 +21,7 @@ class TgBotUtilsImpl {
     }
 
     async start() {
-        await this.bot.sendSticker(this.chatId, TELL_ME_THE_STATUS_STIKER);
+        await this.bot.sendSticker(this.chatId, TELL_ME_THE_STATUS_STICKER);
         await this.bot.sendMessage(
             this.chatId,
             strings.introductory_instructions,
@@ -29,7 +29,7 @@ class TgBotUtilsImpl {
     }
 
     async startForGroup() {
-        await this.bot.sendSticker(this.chatId, TELL_ME_THE_STATUS_STIKER);
+        await this.bot.sendSticker(this.chatId, TELL_ME_THE_STATUS_STICKER);
     }
 
     async info() {
@@ -81,9 +81,13 @@ class TgBotUtilsImpl {
     }
 
     async tegAll() {
-        const allUsersString = "@" + AVAILABLE_USERS.filter(item => item !== this.msg.from.username)
-            .reduce((outputString, item) => `${outputString} @${item}`)
-        await this.bot.sendMessage(this.chatId, allUsersString);
+        if (this.msg.chat.type === CHAT_TYPE.GROUP) {
+            const allUsersString = "@" + AVAILABLE_USERS.filter(item => item !== this.msg.from.username)
+                .reduce((outputString, item) => `${outputString} @${item}`)
+            await this.bot.sendMessage(this.chatId, allUsersString);
+        } else {
+            await this.bot.sendMessage(this.chatId, strings.can_only_be_used_in_groups)
+        }
     }
 }
 
