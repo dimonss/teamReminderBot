@@ -60,6 +60,16 @@ const startApp = async () => {
             );
         }
     });
+    app.get('/get_today_tasks', (req, res, next) => {
+        if (checkAuth(req, res)) {
+            TaskSQL.allToday(
+                (error, tasks) => {
+                    if (error) return next(error);
+                    res.json(commonDto(STATUS.OK, 'success', tasks));
+                },
+            );
+        }
+    });
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };
