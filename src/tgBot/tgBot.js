@@ -59,6 +59,14 @@ const tgBot = (token) => {
             await utils.tegAll()
             return
         }
+        if (text === COMMAND.BUG_ON_PRE_PROD || text === COMMAND.BUG_ON_PRE_PROD + BOT_NAME) {
+            await utils.bugOnPreProd()
+            return
+        }
+        if (text === COMMAND.BUG_ON_PROD || text === COMMAND.BUG_ON_PROD + BOT_NAME) {
+            await utils.bugOnProd()
+            return
+        }
         //QUOTES////////////////////////////////////////////////////////////////////////////////////////////////////
         if (text?.length >= 1) {
             await task.add();

@@ -1,4 +1,5 @@
 import strings from "../constants/strings.js";
+import {SAVELY_STICKER_1, SAVELY_STICKER_2, SAVELY_STICKER_3, SAVELY_STICKER_4} from "../constants.js";
 
 const _getRandomElementFromArray = (list) => {
     const randomIndex = Math.floor(Math.random() * list.length);
@@ -45,4 +46,26 @@ export const getRandomRequestMessageForPrivateEmptyDaily = () => {
     return _getRandomElementFromArray(_arr)
 }
 
+export const getRandomSavelysStiker = () => {
+    const _arr = [
+        SAVELY_STICKER_1,
+        SAVELY_STICKER_2,
+        SAVELY_STICKER_3,
+        SAVELY_STICKER_4,
+    ]
+    return _getRandomElementFromArray(_arr)
 
+}
+
+export const getRandomMessageForBugOnPreProd = () => {
+    const _arr = [
+        strings.bugOnPreProd,
+    ];
+    return _getRandomElementFromArray(_arr)
+}
+export const getRandomMessageForBugOnProd = () => {
+    const _arr = [
+        strings.bugOnProd,
+    ];
+    return _getRandomElementFromArray(_arr)
+}

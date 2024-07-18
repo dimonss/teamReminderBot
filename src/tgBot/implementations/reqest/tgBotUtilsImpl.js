@@ -2,7 +2,11 @@ import {CHAT_TYPE, TELL_ME_THE_STATUS_STICKER} from '../../../constants.js';
 import UserSQL from '../../../db/userSQL.js';
 import TaskSQL from "../../../db/taskSQL.js";
 import strings from "../../../constants/strings.js";
-import {genRandomErrorMessageForPrivateEmptyDaily} from "../../../utils/rangomStringsUtils.js";
+import {
+    genRandomErrorMessageForPrivateEmptyDaily,
+    getRandomMessageForBugOnPreProd, getRandomMessageForBugOnProd,
+    getRandomSavelysStiker
+} from "../../../utils/rangomStringsUtils.js";
 import {AVAILABLE_USERS} from "../../../index.js";
 
 class TgBotUtilsImpl {
@@ -88,6 +92,18 @@ class TgBotUtilsImpl {
         } else {
             await this.bot.sendMessage(this.chatId, strings.can_only_be_used_in_groups)
         }
+    }
+
+    async bugOnPreProd() {
+        this.bot.sendSticker(this.chatId, getRandomSavelysStiker())
+        this.bot.sendMessage(this.chatId, getRandomMessageForBugOnPreProd())
+        this.tegAll()
+    }
+
+    async bugOnProd() {
+        this.bot.sendSticker(this.chatId, getRandomSavelysStiker())
+        this.bot.sendMessage(this.chatId, getRandomMessageForBugOnProd())
+        this.tegAll()
     }
 }
 

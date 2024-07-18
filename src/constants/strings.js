@@ -30,6 +30,8 @@ const strings = {
     you_are_not_in_the_system: "Вас нет в системе. Отправьте боту текущие задачи для регистрации в системе",
     you_do_not_have_access_to_this_bot:  "У вас нет доступа к данному боту",
     can_only_be_used_in_groups: "Можно использовать только в группах",
+    bugOnProd: "Баг на проде!!!",
+    bugOnPreProd: "Баг на препроде!!!",
 };
 
 export default strings;
