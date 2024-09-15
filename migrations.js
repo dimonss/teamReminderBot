@@ -21,8 +21,10 @@ const SQLQueries = {
     yesterday TEXT NOT NULL, 
     today TEXT,
     date TEXT NOT NULL
-    )
-    `,
+    )`,
+    // Add into USERS LIST cyrillic username
+    user_v1: `ALTER TABLE user ADD COLUMN cyrillicName TEXT DEFAULT NULL;
+`,
 };
 
 const db = new sqlite3.Database(dbName);

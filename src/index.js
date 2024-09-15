@@ -45,7 +45,16 @@ const startApp = async () => {
             TaskSQL.all(
                 (error, tasks) => {
                     if (error) return next(error);
-                    res.json(commonDto(STATUS.OK, 'success', tasks));
+                    UserSQL.all(
+                        (error, users) => {
+                            if (error) return next(error);
+                            const data = tasks.map(item => ({
+                                ...item,
+                                userCyrillicName: users.find(user => user.id === Number(item.userId))?.cyrillicName
+                            }))
+                            res.json(commonDto(STATUS.OK, 'success', data));
+                        },
+                    );
                 },
             );
         }
@@ -53,9 +62,9 @@ const startApp = async () => {
     app.get('/get_all_users', (req, res, next) => {
         if (checkAuth(req, res)) {
             UserSQL.all(
-                (error, tasks) => {
+                (error, users) => {
                     if (error) return next(error);
-                    res.json(commonDto(STATUS.OK, 'success', tasks));
+                    res.json(commonDto(STATUS.OK, 'success', users));
                 },
             );
         }
@@ -65,7 +74,16 @@ const startApp = async () => {
             TaskSQL.allToday(
                 (error, tasks) => {
                     if (error) return next(error);
-                    res.json(commonDto(STATUS.OK, 'success', tasks));
+                    UserSQL.all(
+                        (error, users) => {
+                            if (error) return next(error);
+                            const data = tasks.map(item => ({
+                                ...item,
+                                userCyrillicName: users.find(user => user.id === Number(item.userId))?.cyrillicName
+                            }))
+                            res.json(commonDto(STATUS.OK, 'success', data));
+                        },
+                    );
                 },
             );
         }
