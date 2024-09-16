@@ -8,6 +8,7 @@ import {
     getRandomSavelysStiker
 } from "../../../utils/rangomStringsUtils.js";
 import {AVAILABLE_USERS} from "../../../index.js";
+import {downloadXLSXWithAlTasks} from "../../../utils/downloadXLSXWithAllTasks.js";
 
 class TgBotUtilsImpl {
     constructor(bot, msg) {
@@ -104,6 +105,10 @@ class TgBotUtilsImpl {
         this.bot.sendSticker(this.chatId, getRandomSavelysStiker())
         this.bot.sendMessage(this.chatId, getRandomMessageForBugOnProd())
         this.tegAll()
+    }
+
+    async exportXLSX() {
+        downloadXLSXWithAlTasks(null, {bot: this.bot, chatId: this.chatId});
     }
 }
 

@@ -67,7 +67,11 @@ const tgBot = (token) => {
             await utils.bugOnProd()
             return
         }
-        //QUOTES////////////////////////////////////////////////////////////////////////////////////////////////////
+        if (text === COMMAND.EXPORT_XLSX || text === COMMAND.EXPORT_XLSX + BOT_NAME) {
+            await utils.exportXLSX()
+            return
+        }
+        //ADD_TASK////////////////////////////////////////////////////////////////////////////////////////////////////
         if (text?.length >= 1) {
             await task.add();
         }

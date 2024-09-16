@@ -36,7 +36,8 @@
     "node-cron": "^3.0.3",
     "node-telegram-bot-api": "^0.61.0",
     "request": "^2.88.2",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "eslint": "^8.47.0",

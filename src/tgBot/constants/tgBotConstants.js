@@ -7,6 +7,7 @@ export const COMMAND = {
     TEG_ALL: '/teg_all',
     BUG_ON_PROD: '/bug_on_prod',
     BUG_ON_PRE_PROD: '/bug_on_pre_prod',
+    EXPORT_XLSX: '/export_xlsx',
 };
 
 export const tgBotDisplayCommands = [
@@ -17,4 +18,5 @@ export const tgBotDisplayCommands = [
     {command: COMMAND.TEG_ALL, description: 'Тегнуть всех участников команды'},
     {command: COMMAND.BUG_ON_PROD, description: 'Баг на проде!!!'},
     {command: COMMAND.BUG_ON_PRE_PROD, description: 'Баг на препроде!!!'},
+    {command: COMMAND.EXPORT_XLSX, description: 'Экспорт XLSX файла'},
 ];
