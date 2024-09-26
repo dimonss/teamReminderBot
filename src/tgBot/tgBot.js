@@ -72,7 +72,7 @@ const tgBot = (token) => {
             return
         }
         //ADD_TASK////////////////////////////////////////////////////////////////////////////////////////////////////
-        if (text?.length >= 1) {
+        if (text?.length >= 1 && !msg?.reply_to_message) {
             await task.add();
         }
 
