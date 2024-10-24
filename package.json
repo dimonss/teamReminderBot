@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start:dev": "nodemon src/index.js",
-    "start:prod": "node src/index.js",
+    "start:prod": "pm2 start src/index.js --name daily_bot",
     "lint": "npx eslint ./src",
     "format": "npx eslint ./src --fix"
   },
