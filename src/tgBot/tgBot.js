@@ -41,11 +41,17 @@ const tgBot = (token) => {
             return;
         }
         if (text === COMMAND.INFO + BOT_NAME) {
-            await dailyGroupReport({username: msg?.from?.username || 'withoutUsername'})
+            await dailyGroupReport({
+                username: msg?.from?.username || 'withoutUsername',
+                message_thread_id: msg?.message_thread_id ? {message_thread_id: msg?.message_thread_id} : {}
+            })
             return;
         }
         if (text === COMMAND.REMIND + BOT_NAME) {
-            await dailyPublicRemind({username: msg?.from?.username || 'withoutUsername'});
+            await dailyPublicRemind({
+                username: msg?.from?.username || 'withoutUsername',
+                message_thread_id: msg?.message_thread_id ? {message_thread_id: msg?.message_thread_id} : {}
+            });
             return;
         }
         if (text === COMMAND.REMIND_PRIVATE || text === COMMAND.REMIND_PRIVATE + BOT_NAME) {

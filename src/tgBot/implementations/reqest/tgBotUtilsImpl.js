@@ -15,7 +15,7 @@ class TgBotUtilsImpl {
         this.bot = bot;
         this.chatId = msg?.chat?.id;
         this.text = msg.text;
-        this.message_thread_id = {message_thread_id: msg?.message_thread_id} || {};
+        this.message_thread_id = msg?.message_thread_id ? {message_thread_id: msg?.message_thread_id} : {};
         this.msg = msg;
     }
 
@@ -63,6 +63,7 @@ class TgBotUtilsImpl {
                                 {parse_mode: 'HTML', ...this.message_thread_id},
                             );
                         } else {
+
                             await this.bot.sendMessage(
                                 this.chatId,
                                 genRandomErrorMessageForPrivateEmptyDaily(),
@@ -75,13 +76,14 @@ class TgBotUtilsImpl {
                     await this.bot.sendMessage(
                         this.chatId,
                         strings.you_are_not_in_the_system,
+                        this.message_thread_id
                     );
                 }
             })
         } catch (e) {
             console.log("/info command error");
             console.log(e);
-            await this.bot.sendMessage(this.chatId, strings.ups);
+            await this.bot.sendMessage(this.chatId, strings.ups, this.message_thread_id);
         }
     }
 

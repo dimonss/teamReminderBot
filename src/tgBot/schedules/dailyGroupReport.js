@@ -8,12 +8,12 @@ import {getCyrillicUsername} from "../../utils/commonUtils.js";
 const dailyGroupReport = async (data) => {
     try {
         if (data?.username && data?.username !== AVAILABLE_USERS[0]) {
-            await bot.sendMessage(GROUP_CHAT_ID, strings.command_not_available)
+            await bot.sendMessage(GROUP_CHAT_ID, strings.command_not_available, data.message_thread_id)
             return
         }
         TaskSQL.allToday(async (error, tasks) => {
             if (error) {
-                await bot.sendMessage(GROUP_CHAT_ID, strings.ups)
+                await bot.sendMessage(GROUP_CHAT_ID, strings.ups, data.message_thread_id)
                 return
             }
             let responseMessage = '';
@@ -33,7 +33,8 @@ const dailyGroupReport = async (data) => {
                             if (tasks.length === index + 1) {
                                 await bot.sendMessage(
                                     GROUP_CHAT_ID,
-                                    responseMessage || getRandomErrorMessageForPublicEmptyDaily()
+                                    responseMessage || getRandomErrorMessageForPublicEmptyDaily(),
+                                    data.message_thread_id
                                 )
                             }
                         }
@@ -42,12 +43,13 @@ const dailyGroupReport = async (data) => {
             } else {
                 await bot.sendMessage(
                     GROUP_CHAT_ID,
-                    getRandomErrorMessageForPublicEmptyDaily()
+                    getRandomErrorMessageForPublicEmptyDaily(),
+                    data.message_thread_id
                 )
             }
         });
     } catch (e) {
-        await bot.sendMessage(GROUP_CHAT_ID, strings.ups)
+        await bot.sendMessage(GROUP_CHAT_ID, strings.ups, data.message_thread_id)
     }
 }
 export default dailyGroupReport
