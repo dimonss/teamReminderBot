@@ -16,10 +16,8 @@ const tgBot = (token) => {
         const text = msg?.text;
         const task = new TgBotTaskImpl(bot, msg);
         const utils = new TgBotUtilsImpl(bot, msg);
-        if (BUILD_TYPE !== BUILD_TYPES.PROD) {
-            console.log('msg');
-            console.log(msg);
-        }
+        console.log('msg');
+        console.log(msg);
 
         //PERMISSION VALIDATOR////////////////////////////////////////////////////////////////////////////////////////////////////
         if (text) {
