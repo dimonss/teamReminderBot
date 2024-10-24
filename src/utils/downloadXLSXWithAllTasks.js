@@ -33,7 +33,7 @@ export const downloadXLSXWithAlTasks =
                             });
                         } else if (bot) {
                             // send file TG
-                            bot.bot.sendDocument(bot.chatId, fs.createReadStream(filePath))
+                            bot.bot.sendDocument(bot.chatId, fs.createReadStream(filePath), bot.message_thread_id)
                                 .then(() => {
                                     // Delete the file after sending
                                     fs.unlinkSync(filePath);

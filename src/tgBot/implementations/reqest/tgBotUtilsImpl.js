@@ -15,13 +15,13 @@ class TgBotUtilsImpl {
         this.bot = bot;
         this.chatId = msg?.chat?.id;
         this.text = msg.text;
-        this.message_thread_id = msg?.message_thread_id;
+        this.message_thread_id = {message_thread_id: msg?.message_thread_id} || {};
         this.msg = msg;
     }
 
     async permissionValidator() {
         if (AVAILABLE_USERS.indexOf(this.msg.from.username) === -1) {
-            await this.bot.sendMessage(this.chatId, strings.you_do_not_have_access_to_this_bot);
+            await this.bot.sendMessage(this.chatId, strings.you_do_not_have_access_to_this_bot, this.message_thread_id);
             return true
         }
     }
@@ -31,18 +31,19 @@ class TgBotUtilsImpl {
         await this.bot.sendMessage(
             this.chatId,
             strings.introductory_instructions,
+            this.message_thread_id
         );
     }
 
     async startForGroup() {
-        await this.bot.sendSticker(this.chatId, TELL_ME_THE_STATUS_STICKER);
+        await this.bot.sendSticker(this.chatId, TELL_ME_THE_STATUS_STICKER, this.message_thread_id);
     }
 
     async info() {
         try {
             UserSQL.findByChatId(this.msg.from.username, async (error, data) => {
                 if (error) {
-                    await this.bot.sendMessage(this.chatId, strings.ups);
+                    await this.bot.sendMessage(this.chatId, strings.ups, this.message_thread_id);
                     return;
                 }
                 if (data) {
@@ -51,6 +52,7 @@ class TgBotUtilsImpl {
                             await this.bot.sendMessage(
                                 this.chatId,
                                 strings.ups,
+                                this.message_thread_id
                             );
                             return;
                         }
@@ -58,12 +60,13 @@ class TgBotUtilsImpl {
                             await this.bot.sendMessage(
                                 this.chatId,
                                 `<b>Что делал:</b>\n${taskData.yesterday}\n\n<b>Что буду делать:</b>\n${taskData.today || strings.empty + "\n" + strings.send_a_message_and_it_will_be_added_here}`,
-                                {parse_mode: 'HTML'},
+                                {parse_mode: 'HTML', ...this.message_thread_id},
                             );
                         } else {
                             await this.bot.sendMessage(
                                 this.chatId,
                                 genRandomErrorMessageForPrivateEmptyDaily(),
+                                this.message_thread_id
                             );
                         }
                     })
@@ -83,34 +86,34 @@ class TgBotUtilsImpl {
     }
 
     async getChatId() {
-        await this.bot.sendMessage(this.chatId, this.chatId);
+        await this.bot.sendMessage(this.chatId, this.chatId, this.message_thread_id);
     }
 
     async tegAll() {
         if (this.msg.chat.type === CHAT_TYPE.GROUP || this.msg.chat.type === CHAT_TYPE.SUPERGROUP) {
             const allUsersString = "@" + AVAILABLE_USERS.filter(item => item !== this.msg.from.username)
                 .reduce((outputString, item) => `${outputString} @${item}`)
-            await this.bot.sendMessage(this.chatId, allUsersString, this.message_thread_id ? {message_thread_id: this.msg?.message_thread_id} : {});
+            await this.bot.sendMessage(this.chatId, allUsersString, this.message_thread_id);
 
         } else {
-            await this.bot.sendMessage(this.chatId, strings.can_only_be_used_in_groups)
+            await this.bot.sendMessage(this.chatId, strings.can_only_be_used_in_groups, this.message_thread_id)
         }
     }
 
     async bugOnPreProd() {
-        this.bot.sendSticker(this.chatId, getRandomSavelysStiker())
-        this.bot.sendMessage(this.chatId, getRandomMessageForBugOnPreProd())
+        this.bot.sendSticker(this.chatId, getRandomSavelysStiker(), this.message_thread_id)
+        this.bot.sendMessage(this.chatId, getRandomMessageForBugOnPreProd(), this.message_thread_id)
         this.tegAll()
     }
 
     async bugOnProd() {
-        this.bot.sendSticker(this.chatId, getRandomSavelysStiker())
-        this.bot.sendMessage(this.chatId, getRandomMessageForBugOnProd())
+        this.bot.sendSticker(this.chatId, getRandomSavelysStiker(), this.message_thread_id)
+        this.bot.sendMessage(this.chatId, getRandomMessageForBugOnProd(), this.message_thread_id)
         this.tegAll()
     }
 
     async exportXLSX() {
-        downloadXLSXWithAlTasks(null, {bot: this.bot, chatId: this.chatId});
+        downloadXLSXWithAlTasks(null, {bot: this.bot, chatId: this.chatId, message_thread_id: this.message_thread_id});
     }
 }
 
