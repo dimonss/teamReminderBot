@@ -15,6 +15,7 @@ class TgBotUtilsImpl {
         this.bot = bot;
         this.chatId = msg?.chat?.id;
         this.text = msg.text;
+        this.message_thread_id = msg?.message_thread_id;
         this.msg = msg;
     }
 
@@ -89,7 +90,8 @@ class TgBotUtilsImpl {
         if (this.msg.chat.type === CHAT_TYPE.GROUP || this.msg.chat.type === CHAT_TYPE.SUPERGROUP) {
             const allUsersString = "@" + AVAILABLE_USERS.filter(item => item !== this.msg.from.username)
                 .reduce((outputString, item) => `${outputString} @${item}`)
-            await this.bot.sendMessage(this.chatId, allUsersString);
+            await this.bot.sendMessage(this.chatId, allUsersString, this.message_thread_id ? {message_thread_id: this.msg?.message_thread_id} : {});
+
         } else {
             await this.bot.sendMessage(this.chatId, strings.can_only_be_used_in_groups)
         }
