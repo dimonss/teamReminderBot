@@ -2,7 +2,7 @@ import TelegramApi from 'node-telegram-bot-api';
 import {COMMAND, tgBotDisplayCommands} from './constants/tgBotConstants.js';
 import TgBotTaskImpl from './implementations/reqest/tgBotTaskImpl.js';
 import TgBotUtilsImpl from './implementations/reqest/tgBotUtilsImpl.js';
-import {BOT_NAME, BUILD_TYPE} from "../index.js";
+import {BOT_NAME, BUILD_TYPE, IS_DESIGNERS} from "../index.js";
 import {BUILD_TYPES} from "../constants.js";
 import cron from 'node-cron';
 import dailyGroupReport from './schedules/dailyGroupReport.js'
@@ -85,9 +85,18 @@ const tgBot = (token) => {
 
     });
 
-    cron.schedule('0 9 * * 1-5', dailyPrivateRemind)
-    cron.schedule('10 9 * * 1-5', dailyPublicRemind)
-    cron.schedule('15 9 * * 1-5', dailyGroupReport)
+    if(IS_DESIGNERS){
+        cron.schedule('30 10 * * 1-5', dailyPrivateRemind)
+        cron.schedule('44 10 * * 1-5', dailyPublicRemind)
+        cron.schedule('3 11 * * 1-5', dailyGroupReport)
+    }
+    else {
+        cron.schedule('0 9 * * 1-5', dailyPrivateRemind)
+        cron.schedule('10 9 * * 1-5', dailyPublicRemind)
+        cron.schedule('15 9 * * 1-5', dailyGroupReport)
+    }
+
+
     return bot
 };
 export default tgBot;

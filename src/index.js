@@ -18,6 +18,7 @@ export const BUILD_TYPE = process.env.BUILD_TYPE;
 export const AVAILABLE_USERS = process.env.AVAILABLE_USERS?.split("|");
 export const AVAILABLE_USERS_NAMES = process.env.AVAILABLE_USERS_NAMES?.split("|");
 export const GROUP_CHAT_ID = process.env.GROUP_CHAT_ID;
+export const IS_DESIGNERS = process.env.IS_DESIGNERS || false;
 const PORT = process.env.PORT || 4000;
 
 const app = express();
