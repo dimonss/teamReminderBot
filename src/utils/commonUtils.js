@@ -21,19 +21,18 @@ export const getCurrentDate = () => {
     // Convert to +6 timezone (your local timezone)
     const localTime = addHours(new Date(currentDateUTC), 6);
     
-    // If it's after 16:00 local time, shift to next day
-    // This allows employees to submit daily reports after 16:00 and have them count for the next day
-    const hours = localTime.getHours();
+    // Get the local hours correctly
+    const localHours = localTime.getUTCHours();
     
     // Debug logging
     console.log(`UTC time: ${currentDateUTC.toISOString()}`);
     console.log(`Local time (+6): ${localTime.toISOString()}`);
-    console.log(`Hours: ${hours}`);
-    console.log(`Should shift to next day: ${hours >= 16}`);
+    console.log(`Local hours: ${localHours}`);
+    console.log(`Should shift to next day: ${localHours >= 16}`);
     
     // If after 16:00 local time, add 8 hours to UTC (which gives us +14 total from UTC)
     // If before 16:00 local time, just use +6 from UTC
-    const timeOffset = hours >= 16 ? 14 : 6;
+    const timeOffset = localHours >= 16 ? 14 : 6;
     const adjustedTime = addHours(new Date(currentDateUTC), timeOffset);
     
     console.log(`Time offset: ${timeOffset}`);
