@@ -17,11 +17,18 @@ const addHours = (date, hours) => {
 
 export const getCurrentDate = () => {
     const currentDateUTC = new Date();
-    // in actual +6 but I want make slide to +8 hours
-    const currentDateUTCPlus14 = addHours(new Date(currentDateUTC), 14);
-    const day = currentDateUTCPlus14.getDate().toString().padStart(2, '0');
-    const month = (currentDateUTCPlus14.getMonth() + 1).toString().padStart(2, '0');
-    const year = currentDateUTCPlus14.getFullYear();
+    
+    // Convert to +6 timezone (your local timezone)
+    const localTime = addHours(new Date(currentDateUTC), 6);
+    
+    // If it's after 16:00 local time, shift to next day
+    // This allows employees to submit daily reports after 16:00 and have them count for the next day
+    const hours = localTime.getHours();
+    const adjustedTime = hours >= 16 ? addHours(new Date(localTime), 8) : localTime;
+    
+    const day = adjustedTime.getDate().toString().padStart(2, '0');
+    const month = (adjustedTime.getMonth() + 1).toString().padStart(2, '0');
+    const year = adjustedTime.getFullYear();
     return `${day}.${month}.${year}`;
 };
 
