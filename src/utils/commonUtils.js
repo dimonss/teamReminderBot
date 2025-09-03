@@ -24,7 +24,11 @@ export const getCurrentDate = () => {
     // If it's after 16:00 local time, shift to next day
     // This allows employees to submit daily reports after 16:00 and have them count for the next day
     const hours = localTime.getHours();
-    const adjustedTime = hours >= 16 ? addHours(new Date(localTime), 8) : localTime;
+    
+    // If after 16:00 local time, add 8 hours to UTC (which gives us +14 total from UTC)
+    // If before 16:00 local time, just use +6 from UTC
+    const timeOffset = hours >= 16 ? 14 : 6;
+    const adjustedTime = addHours(new Date(currentDateUTC), timeOffset);
     
     const day = adjustedTime.getDate().toString().padStart(2, '0');
     const month = (adjustedTime.getMonth() + 1).toString().padStart(2, '0');
