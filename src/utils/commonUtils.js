@@ -25,15 +25,28 @@ export const getCurrentDate = () => {
     // This allows employees to submit daily reports after 16:00 and have them count for the next day
     const hours = localTime.getHours();
     
+    // Debug logging
+    console.log(`UTC time: ${currentDateUTC.toISOString()}`);
+    console.log(`Local time (+6): ${localTime.toISOString()}`);
+    console.log(`Hours: ${hours}`);
+    console.log(`Should shift to next day: ${hours >= 16}`);
+    
     // If after 16:00 local time, add 8 hours to UTC (which gives us +14 total from UTC)
     // If before 16:00 local time, just use +6 from UTC
     const timeOffset = hours >= 16 ? 14 : 6;
     const adjustedTime = addHours(new Date(currentDateUTC), timeOffset);
     
-    const day = adjustedTime.getDate().toString().padStart(2, '0');
-    const month = (adjustedTime.getMonth() + 1).toString().padStart(2, '0');
+    console.log(`Time offset: ${timeOffset}`);
+    console.log(`Adjusted time: ${adjustedTime.toISOString()}`);
+    
+    // Use format without leading zeros to match existing database records
+    const day = adjustedTime.getDate();
+    const month = adjustedTime.getMonth() + 1;
     const year = adjustedTime.getFullYear();
-    return `${day}.${month}.${year}`;
+    const result = `${day}.${month}.${year}`;
+    
+    console.log(`Final date: ${result}`);
+    return result;
 };
 
 export const getCyrillicUsername = (username) => {
