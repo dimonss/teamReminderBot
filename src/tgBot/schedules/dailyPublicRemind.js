@@ -17,36 +17,47 @@ const dailyPublicRemind = async (data) => {
             }
             let userList = AVAILABLE_USERS.slice(0);
             if (tasks.length) {
-                tasks?.forEach((item, index) => {
-                    UserSQL.getUser(item.userId, async (error, user) => {
-                        if (error) {
-                            await bot.sendMessage(GROUP_CHAT_ID, strings.ups, data.message_thread_id);
-                            return
-                        }
-                        if (item?.yesterday) {
-                            userList = userList.filter(item => item !== user.name)
-                        }
-                        if (tasks.length === index + 1) {
-                            if (userList.length) {
-                                const responseMessage = userList.reduce((acc, item) => acc + '@' + item + ' ', '')
-                                await bot.sendSticker(GROUP_CHAT_ID, TELL_ME_THE_STATUS_STICKER, data.message_thread_id);
-                                await bot.sendMessage(
-                                    GROUP_CHAT_ID,
-                                    responseMessage,
-                                    data.message_thread_id
-                                )
-                            } else {
-                                await bot.sendSticker(GROUP_CHAT_ID, ZERO_BUGS_STICKER, data.message_thread_id);
-                                await bot.sendMessage(
-                                    GROUP_CHAT_ID,
-                                    strings.congratulation,
-                                    data.message_thread_id
-                                )
-                            }
-                        }
-
-                    })
-                })
+                // Process all tasks and wait for all user data to be loaded
+                const processTasks = async () => {
+                    const promises = tasks.map((item) => {
+                        return new Promise((resolve) => {
+                            UserSQL.getUser(item.userId, (error, user) => {
+                                if (error || !user) {
+                                    resolve(null);
+                                } else if (item?.yesterday) {
+                                    resolve(user.name);
+                                } else {
+                                    resolve(null);
+                                }
+                            });
+                        });
+                    });
+                    
+                    const results = await Promise.all(promises);
+                    const usersWithReports = results.filter(result => result !== null);
+                    
+                    // Remove users who have submitted reports
+                    userList = userList.filter(user => !usersWithReports.includes(user));
+                    
+                    if (userList.length) {
+                        const responseMessage = userList.reduce((acc, item) => acc + '@' + item + ' ', '')
+                        await bot.sendSticker(GROUP_CHAT_ID, TELL_ME_THE_STATUS_STICKER, data.message_thread_id);
+                        await bot.sendMessage(
+                            GROUP_CHAT_ID,
+                            responseMessage,
+                            data.message_thread_id
+                        )
+                    } else {
+                        await bot.sendSticker(GROUP_CHAT_ID, ZERO_BUGS_STICKER, data.message_thread_id);
+                        await bot.sendMessage(
+                            GROUP_CHAT_ID,
+                            strings.congratulation,
+                            data.message_thread_id
+                        )
+                    }
+                };
+                
+                await processTasks();
             } else {
                 const responseMessage = userList.reduce((acc, item) => acc + '@' + item + ' ', '')
                 await bot.sendSticker(GROUP_CHAT_ID, TELL_ME_THE_STATUS_STICKER, data.message_thread_id);

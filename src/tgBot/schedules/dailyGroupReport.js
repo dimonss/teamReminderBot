@@ -18,28 +18,46 @@ const dailyGroupReport = async (data) => {
             }
             let responseMessage = '';
             if (tasks.length) {
-                tasks?.forEach((item, index) => {
-                    UserSQL.getUser(item.userId, async (error, user) => {
-                        if (error) {
-                            return item
-                        } else {
-                            if (item?.yesterday) {
-                                responseMessage +=
-                                    `${getCyrillicUsername(user.name)}:\n\n` +
-                                    `Что делал:\n${item?.yesterday}\n\n` +
-                                    `Что буду делать:\n${item?.today || strings.empty}` +
-                                    `\n_____________________________\n\n`
-                            }
-                            if (tasks.length === index + 1) {
-                                await bot.sendMessage(
-                                    GROUP_CHAT_ID,
-                                    responseMessage || getRandomErrorMessageForPublicEmptyDaily(),
-                                    data.message_thread_id
-                                )
-                            }
-                        }
-                    })
-                })
+                // Process all tasks and wait for all user data to be loaded
+                const processTasks = async () => {
+                    const promises = tasks.map((item) => {
+                        return new Promise((resolve) => {
+                            UserSQL.getUser(item.userId, (error, user) => {
+                                if (error || !user) {
+                                    resolve(null);
+                                } else if (item?.yesterday) {
+                                    resolve({
+                                        name: getCyrillicUsername(user.name),
+                                        yesterday: item.yesterday,
+                                        today: item.today || strings.empty
+                                    });
+                                } else {
+                                    resolve(null);
+                                }
+                            });
+                        });
+                    });
+                    
+                    const results = await Promise.all(promises);
+                    const validResults = results.filter(result => result !== null);
+                    
+                    if (validResults.length > 0) {
+                        responseMessage = validResults.map(result => 
+                            `${result.name}:\n\n` +
+                            `Что делал:\n${result.yesterday}\n\n` +
+                            `Что буду делать:\n${result.today}` +
+                            `\n_____________________________\n\n`
+                        ).join('');
+                    }
+                    
+                    await bot.sendMessage(
+                        GROUP_CHAT_ID,
+                        responseMessage || getRandomErrorMessageForPublicEmptyDaily(),
+                        data.message_thread_id
+                    );
+                };
+                
+                await processTasks();
             } else {
                 await bot.sendMessage(
                     GROUP_CHAT_ID,

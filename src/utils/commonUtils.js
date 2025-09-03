@@ -19,7 +19,10 @@ export const getCurrentDate = () => {
     const currentDateUTC = new Date();
     // in actual +6 but I want make slide to +8 hours
     const currentDateUTCPlus14 = addHours(new Date(currentDateUTC), 14);
-    return (currentDateUTCPlus14.getDate() + '.' + (currentDateUTCPlus14.getMonth() + 1) + '.' + currentDateUTCPlus14.getFullYear());
+    const day = currentDateUTCPlus14.getDate().toString().padStart(2, '0');
+    const month = (currentDateUTCPlus14.getMonth() + 1).toString().padStart(2, '0');
+    const year = currentDateUTCPlus14.getFullYear();
+    return `${day}.${month}.${year}`;
 };
 
 export const getCyrillicUsername = (username) => {

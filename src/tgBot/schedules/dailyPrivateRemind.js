@@ -18,49 +18,75 @@ const dailyPrivateRemind = async (data) => {
             }
             let userList = AVAILABLE_USERS.slice(0); //for copy object
             if (tasks.length) {
-                tasks?.forEach((item, index) => {
-                    UserSQL.getUser(item.userId, async (error, user) => {
-                        if (error) {
-                            return
-                        }
-                        if (item?.yesterday) {
-                            userList = userList.filter(item => item !== user.name)
-                        }
-                        //last iteration
-                        if (tasks.length === index + 1) {
-                            if (userList.length) {
-                                userList.forEach(item => {
-                                    userSQL.getChatIdByUsername(item, async (error, data) => {
-                                        if (error) {
-                                            return
-                                        }
-                                        if (data?.chatId) {
-                                            await bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STICKER);
-                                            await bot.sendMessage(data.chatId, getRandomRequestMessageForPrivateEmptyDaily())
-                                        }
-                                    })
-                                })
-                            }
-                        }
-
-                    })
-                })
+                // Process all tasks and wait for all user data to be loaded
+                const processTasks = async () => {
+                    const promises = tasks.map((item) => {
+                        return new Promise((resolve) => {
+                            UserSQL.getUser(item.userId, (error, user) => {
+                                if (error || !user) {
+                                    resolve(null);
+                                } else if (item?.yesterday) {
+                                    resolve(user.name);
+                                } else {
+                                    resolve(null);
+                                }
+                            });
+                        });
+                    });
+                    
+                    const results = await Promise.all(promises);
+                    const usersWithReports = results.filter(result => result !== null);
+                    
+                    // Remove users who have submitted reports
+                    userList = userList.filter(user => !usersWithReports.includes(user));
+                    
+                    if (userList.length) {
+                        // Send private messages to users who haven't submitted reports
+                        const sendPrivateMessages = userList.map(item => {
+                            return new Promise((resolve) => {
+                                userSQL.getChatIdByUsername(item, async (error, data) => {
+                                    if (error || !data?.chatId) {
+                                        resolve();
+                                        return;
+                                    }
+                                    try {
+                                        await bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STICKER);
+                                        await bot.sendMessage(data.chatId, getRandomRequestMessageForPrivateEmptyDaily());
+                                    } catch (e) {
+                                        console.log("Error sending private message:", e);
+                                    }
+                                    resolve();
+                                });
+                            });
+                        });
+                        
+                        await Promise.all(sendPrivateMessages);
+                    }
+                };
+                
+                await processTasks();
             } else {
-                userList.forEach(item => {
-                    userSQL.getChatIdByUsername(item, async (error, data) => {
-                        if (error) {
-                            return
-                        }
-                        //if user have chat_id in db
-                        if (data?.chatId) {
-                            await bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STICKER);
-                            await bot.sendMessage(data.chatId, getRandomRequestMessageForPrivateEmptyDaily())
-                        }
-                    })
-                })
+                // No tasks at all, send reminders to all users
+                const sendPrivateMessages = userList.map(item => {
+                    return new Promise((resolve) => {
+                        userSQL.getChatIdByUsername(item, async (error, data) => {
+                            if (error || !data?.chatId) {
+                                resolve();
+                                return;
+                            }
+                            try {
+                                await bot.sendSticker(data.chatId, TELL_ME_THE_STATUS_STICKER);
+                                await bot.sendMessage(data.chatId, getRandomRequestMessageForPrivateEmptyDaily());
+                            } catch (e) {
+                                console.log("Error sending private message:", e);
+                            }
+                            resolve();
+                        });
+                    });
+                });
+                
+                await Promise.all(sendPrivateMessages);
             }
-
-
         });
     } catch (e) {
         console.log("Error");
