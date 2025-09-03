@@ -22,28 +22,16 @@ export const getCurrentDate = () => {
     const utcHours = currentDateUTC.getUTCHours();
     const localHours = (utcHours + 6) % 24;
     
-    // Debug logging
-    console.log(`UTC time: ${currentDateUTC.toISOString()}`);
-    console.log(`UTC hours: ${utcHours}`);
-    console.log(`Local hours: ${localHours}`);
-    console.log(`Should shift to next day: ${localHours >= 16}`);
-    
     // If after 16:00 local time, add 8 hours to UTC (which gives us +14 total from UTC)
     // If before 16:00 local time, just use +6 from UTC
     const timeOffset = localHours >= 16 ? 14 : 6;
     const adjustedTime = addHours(new Date(currentDateUTC), timeOffset);
     
-    console.log(`Time offset: ${timeOffset}`);
-    console.log(`Adjusted time: ${adjustedTime.toISOString()}`);
-    
     // Use format without leading zeros to match existing database records
     const day = adjustedTime.getDate();
     const month = adjustedTime.getMonth() + 1;
     const year = adjustedTime.getFullYear();
-    const result = `${day}.${month}.${year}`;
-    
-    console.log(`Final date: ${result}`);
-    return result;
+    return `${day}.${month}.${year}`;
 };
 
 export const getCyrillicUsername = (username) => {
