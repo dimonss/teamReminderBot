@@ -18,15 +18,13 @@ const addHours = (date, hours) => {
 export const getCurrentDate = () => {
     const currentDateUTC = new Date();
     
-    // Convert to +6 timezone (your local timezone)
-    const localTime = addHours(new Date(currentDateUTC), 6);
-    
-    // Get the local hours correctly
-    const localHours = localTime.getUTCHours();
+    // Get UTC hours and add 6 to get local hours
+    const utcHours = currentDateUTC.getUTCHours();
+    const localHours = (utcHours + 6) % 24;
     
     // Debug logging
     console.log(`UTC time: ${currentDateUTC.toISOString()}`);
-    console.log(`Local time (+6): ${localTime.toISOString()}`);
+    console.log(`UTC hours: ${utcHours}`);
     console.log(`Local hours: ${localHours}`);
     console.log(`Should shift to next day: ${localHours >= 16}`);
     
