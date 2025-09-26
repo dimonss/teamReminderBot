@@ -8,6 +8,7 @@ export const COMMAND = {
     BUG_ON_PROD: '/bug_on_prod',
     BUG_ON_PRE_PROD: '/bug_on_pre_prod',
     EXPORT_XLSX: '/export_xlsx',
+    DELETE_DAILY: '/delete_daily',
 };
 
 export const tgBotDisplayCommands = [
@@ -19,4 +20,5 @@ export const tgBotDisplayCommands = [
     {command: COMMAND.BUG_ON_PROD, description: 'Баг на проде!!!'},
     {command: COMMAND.BUG_ON_PRE_PROD, description: 'Баг на препроде!!!'},
     {command: COMMAND.EXPORT_XLSX, description: 'Экспорт XLSX файла'},
+    {command: COMMAND.DELETE_DAILY, description: 'Удалить сегодняшний дейлик'},
 ];

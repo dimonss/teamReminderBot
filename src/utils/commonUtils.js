@@ -37,3 +37,26 @@ export const getCurrentDate = () => {
 export const getCyrillicUsername = (username) => {
     return AVAILABLE_USERS_NAMES[AVAILABLE_USERS.indexOf(username)]
 }
+
+export const isGroupReportTimePassed = () => {
+    const currentDateUTC = new Date();
+    const utcHours = currentDateUTC.getUTCHours();
+    const localHours = (utcHours + 6) % 24;
+    
+    // Get current time in local timezone
+    const timeOffset = localHours >= 16 ? 14 : 6;
+    const adjustedTime = addHours(new Date(currentDateUTC), timeOffset);
+    const currentHour = adjustedTime.getHours();
+    const currentMinute = adjustedTime.getMinutes();
+    
+    // Check if we're past the group report time
+    // For designers: 11:03, for regular: 9:15
+    const { IS_DESIGNERS } = require('../index.js');
+    const reportHour = IS_DESIGNERS ? 11 : 9;
+    const reportMinute = IS_DESIGNERS ? 3 : 15;
+    
+    const currentTimeInMinutes = currentHour * 60 + currentMinute;
+    const reportTimeInMinutes = reportHour * 60 + reportMinute;
+    
+    return currentTimeInMinutes > reportTimeInMinutes;
+}

@@ -55,6 +55,11 @@ class TaskSQL {
             cb,
         );
     }
+
+    static deleteTodayTask(userId, cb) {
+        const sql = 'DELETE FROM task WHERE userId = ? AND date = ?';
+        db.run(sql, userId, getCurrentDate(), cb);
+    }
 }
 
 export default TaskSQL;

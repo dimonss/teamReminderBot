@@ -78,6 +78,10 @@ const tgBot = (token) => {
             await utils.exportXLSX()
             return
         }
+        if (text === COMMAND.DELETE_DAILY || text === COMMAND.DELETE_DAILY + BOT_NAME) {
+            await task.delete();
+            return;
+        }
         //ADD_TASK////////////////////////////////////////////////////////////////////////////////////////////////////
         if (text?.length >= 1 && !msg?.reply_to_message) {
             await task.add();

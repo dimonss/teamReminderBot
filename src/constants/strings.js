@@ -32,6 +32,10 @@ const strings = {
     can_only_be_used_in_groups: "Можно использовать только в группах",
     bugOnProd: "Баг на проде!!!",
     bugOnPreProd: "Баг на препроде!!!",
+    daily_deleted_successfully: "Дейлик успешно удален! Теперь можешь написать новый.",
+    no_daily_to_delete: "У тебя нет дейлика для удаления сегодня.",
+    cannot_delete_after_report: "Нельзя удалить дейлик после отправки отчета в группу.",
+    daily_deleted_but_report_sent: "Дейлик удален, но отчет уже был отправлен в группу.",
 };
 
 export default strings;

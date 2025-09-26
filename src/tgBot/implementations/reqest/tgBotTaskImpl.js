@@ -3,6 +3,7 @@ import UserSQL from "../../../db/userSQL.js";
 import taskSQL from "../../../db/taskSQL.js";
 import strings from "../../../constants/strings.js";
 import {genRandomErrorMessageForCompletedDaily} from "../../../utils/rangomStringsUtils.js";
+import {isGroupReportTimePassed} from "../../../utils/commonUtils.js";
 
 class TgBotTaskImpl {
     constructor(bot, msg) {
@@ -106,6 +107,68 @@ class TgBotTaskImpl {
                 })
             }
             addQuote();
+        } catch (e) {
+            await this.bot.sendMessage(
+                this.chatId,
+                strings.ups,
+            );
+        }
+    }
+
+    async delete() {
+        try {
+            UserSQL.userExist(this.username, async (error, userExistData) => {
+                if (!userExistData?.id) {
+                    await this.bot.sendMessage(
+                        this.chatId,
+                        strings.you_are_not_in_the_system,
+                    );
+                    return;
+                }
+
+                // Check if group report time has passed
+                if (isGroupReportTimePassed()) {
+                    await this.bot.sendMessage(
+                        this.chatId,
+                        strings.cannot_delete_after_report,
+                    );
+                    return;
+                }
+
+                // Check if user has a daily task today
+                TaskSQL.getTodayReport(userExistData.id, async (error, todayTask) => {
+                    if (error) {
+                        await this.bot.sendMessage(
+                            this.chatId,
+                            strings.ups,
+                        );
+                        return;
+                    }
+
+                    if (!todayTask?.id) {
+                        await this.bot.sendMessage(
+                            this.chatId,
+                            strings.no_daily_to_delete,
+                        );
+                        return;
+                    }
+
+                    // Delete the daily task
+                    TaskSQL.deleteTodayTask(userExistData.id, async (error) => {
+                        if (error) {
+                            await this.bot.sendMessage(
+                                this.chatId,
+                                strings.ups,
+                            );
+                        } else {
+                            await this.bot.sendMessage(
+                                this.chatId,
+                                strings.daily_deleted_successfully,
+                            );
+                        }
+                    });
+                });
+            });
         } catch (e) {
             await this.bot.sendMessage(
                 this.chatId,
