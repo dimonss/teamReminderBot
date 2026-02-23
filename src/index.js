@@ -1,12 +1,13 @@
 import express from 'express';
 import TaskSQL from './db/taskSQL.js';
-import {commonDto} from './DTO/common.js';
-import {STATUS} from './constants.js';
+import { commonDto } from './DTO/common.js';
+import { STATUS } from './constants.js';
 import tgBot from './tgBot/tgBot.js';
-import {checkAuth} from './utils/commonUtils.js';
+import { checkAuth } from './utils/commonUtils.js';
 import dotenv from 'dotenv';
 import UserSQL from "./db/userSQL.js";
-import {downloadXLSXWithAlTasks} from "./utils/downloadXLSXWithAllTasks.js";
+import { downloadXLSXWithAlTasks } from "./utils/downloadXLSXWithAllTasks.js";
+import { downloadXLSXWithLastMonthTasks } from "./utils/downloadXLSXWithLastMonthTasks.js";
 
 dotenv.config();
 
@@ -96,7 +97,19 @@ const startApp = async () => {
     app.get('/export_xlsx', async (req, res, next) => {
         try {
             if (checkAuth(req, res)) {
-                downloadXLSXWithAlTasks({res, next});
+                downloadXLSXWithAlTasks({ res, next });
+            }
+        } catch (err) {
+            console.error('Error exporting data:', err);
+            res.status(500).send('Error exporting data');
+        }
+    });
+
+    // Маршрут для экспорта данных в XLSX за последний месяц
+    app.get('/export_xlsx_month', async (req, res, next) => {
+        try {
+            if (checkAuth(req, res)) {
+                downloadXLSXWithLastMonthTasks({ res, next });
             }
         } catch (err) {
             console.error('Error exporting data:', err);

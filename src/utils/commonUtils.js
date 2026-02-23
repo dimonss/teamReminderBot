@@ -38,6 +38,19 @@ export const getCyrillicUsername = (username) => {
     return AVAILABLE_USERS_NAMES[AVAILABLE_USERS.indexOf(username)]
 }
 
+export const getLastMonthDateRange = () => {
+    const now = addHours(new Date(), 6);
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const start = new Date(end);
+    start.setMonth(start.getMonth() - 1);
+    return { start, end };
+}
+
+export const parseDate = (dateStr) => {
+    const parts = dateStr.split('.');
+    return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+}
+
 export const isGroupReportTimePassed = () => {
     const currentDateUTC = new Date();
     const utcHours = currentDateUTC.getUTCHours();

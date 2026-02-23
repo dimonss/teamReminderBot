@@ -1,4 +1,4 @@
-import {CHAT_TYPE, TELL_ME_THE_STATUS_STICKER} from '../../../constants.js';
+import { CHAT_TYPE, TELL_ME_THE_STATUS_STICKER } from '../../../constants.js';
 import UserSQL from '../../../db/userSQL.js';
 import TaskSQL from "../../../db/taskSQL.js";
 import strings from "../../../constants/strings.js";
@@ -7,15 +7,16 @@ import {
     getRandomMessageForBugOnPreProd, getRandomMessageForBugOnProd,
     getRandomSavelysStiker
 } from "../../../utils/rangomStringsUtils.js";
-import {AVAILABLE_USERS} from "../../../index.js";
-import {downloadXLSXWithAlTasks} from "../../../utils/downloadXLSXWithAllTasks.js";
+import { AVAILABLE_USERS } from "../../../index.js";
+import { downloadXLSXWithAlTasks } from "../../../utils/downloadXLSXWithAllTasks.js";
+import { downloadXLSXWithLastMonthTasks } from "../../../utils/downloadXLSXWithLastMonthTasks.js";
 
 class TgBotUtilsImpl {
     constructor(bot, msg) {
         this.bot = bot;
         this.chatId = msg?.chat?.id;
         this.text = msg.text;
-        this.message_thread_id = msg?.message_thread_id ? {message_thread_id: msg?.message_thread_id} : {};
+        this.message_thread_id = msg?.message_thread_id ? { message_thread_id: msg?.message_thread_id } : {};
         this.msg = msg;
     }
 
@@ -60,7 +61,7 @@ class TgBotUtilsImpl {
                             await this.bot.sendMessage(
                                 this.chatId,
                                 `<b>Что делал:</b>\n${taskData.yesterday}\n\n<b>Что буду делать:</b>\n${taskData.today || strings.empty + "\n" + strings.send_a_message_and_it_will_be_added_here}`,
-                                {parse_mode: 'HTML', ...this.message_thread_id},
+                                { parse_mode: 'HTML', ...this.message_thread_id },
                             );
                         } else {
 
@@ -115,7 +116,11 @@ class TgBotUtilsImpl {
     }
 
     async exportXLSX() {
-        downloadXLSXWithAlTasks(null, {bot: this.bot, chatId: this.chatId, message_thread_id: this.message_thread_id});
+        downloadXLSXWithAlTasks(null, { bot: this.bot, chatId: this.chatId, message_thread_id: this.message_thread_id });
+    }
+
+    async exportXLSXMonth() {
+        downloadXLSXWithLastMonthTasks(null, { bot: this.bot, chatId: this.chatId, message_thread_id: this.message_thread_id });
     }
 }
 

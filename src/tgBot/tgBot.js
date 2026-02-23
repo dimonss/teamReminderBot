@@ -1,16 +1,16 @@
 import TelegramApi from 'node-telegram-bot-api';
-import {COMMAND, tgBotDisplayCommands} from './constants/tgBotConstants.js';
+import { COMMAND, tgBotDisplayCommands } from './constants/tgBotConstants.js';
 import TgBotTaskImpl from './implementations/reqest/tgBotTaskImpl.js';
 import TgBotUtilsImpl from './implementations/reqest/tgBotUtilsImpl.js';
-import {BOT_NAME, BUILD_TYPE, IS_DESIGNERS} from "../index.js";
-import {BUILD_TYPES} from "../constants.js";
+import { BOT_NAME, BUILD_TYPE, IS_DESIGNERS } from "../index.js";
+import { BUILD_TYPES } from "../constants.js";
 import cron from 'node-cron';
 import dailyGroupReport from './schedules/dailyGroupReport.js'
 import dailyPublicRemind from "./schedules/dailyPublicRemind.js";
 import dailyPrivateRemind from "./schedules/dailyPrivateRemind.js";
 
 const tgBot = (token) => {
-    const bot = new TelegramApi(token, {polling: true});
+    const bot = new TelegramApi(token, { polling: true });
     bot.setMyCommands(tgBotDisplayCommands).then();
     bot.on('message', async (msg) => {
         const text = msg?.text;
@@ -43,19 +43,19 @@ const tgBot = (token) => {
         if (text === COMMAND.INFO + BOT_NAME) {
             await dailyGroupReport({
                 username: msg?.from?.username || 'withoutUsername',
-                message_thread_id: msg?.message_thread_id ? {message_thread_id: msg?.message_thread_id} : {}
+                message_thread_id: msg?.message_thread_id ? { message_thread_id: msg?.message_thread_id } : {}
             })
             return;
         }
         if (text === COMMAND.REMIND + BOT_NAME) {
             await dailyPublicRemind({
                 username: msg?.from?.username || 'withoutUsername',
-                message_thread_id: msg?.message_thread_id ? {message_thread_id: msg?.message_thread_id} : {}
+                message_thread_id: msg?.message_thread_id ? { message_thread_id: msg?.message_thread_id } : {}
             });
             return;
         }
         if (text === COMMAND.REMIND_PRIVATE || text === COMMAND.REMIND_PRIVATE + BOT_NAME) {
-            await dailyPrivateRemind({username: msg?.from?.username || 'withoutUsername'});
+            await dailyPrivateRemind({ username: msg?.from?.username || 'withoutUsername' });
             return;
         }
         if (text === COMMAND.CHAT_ID || text === COMMAND.CHAT_ID + BOT_NAME) {
@@ -82,6 +82,10 @@ const tgBot = (token) => {
             await task.delete();
             return;
         }
+        if (text === COMMAND.EXPORT_XLSX_MONTH || text === COMMAND.EXPORT_XLSX_MONTH + BOT_NAME) {
+            await utils.exportXLSXMonth()
+            return
+        }
         //ADD_TASK////////////////////////////////////////////////////////////////////////////////////////////////////
         if (text?.length >= 1 && !msg?.reply_to_message) {
             await task.add();
@@ -89,7 +93,7 @@ const tgBot = (token) => {
 
     });
 
-    if(IS_DESIGNERS){
+    if (IS_DESIGNERS) {
         console.log("IS_DESIGNERS_SCHEDULE");
         cron.schedule('30 10 * * 1-5', dailyPrivateRemind)
         cron.schedule('44 10 * * 1-5', dailyPublicRemind)
