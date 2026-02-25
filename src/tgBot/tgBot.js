@@ -2,7 +2,7 @@ import TelegramApi from 'node-telegram-bot-api';
 import { COMMAND, tgBotDisplayCommands } from './constants/tgBotConstants.js';
 import TgBotTaskImpl from './implementations/reqest/tgBotTaskImpl.js';
 import TgBotUtilsImpl from './implementations/reqest/tgBotUtilsImpl.js';
-import { BOT_NAME, BUILD_TYPE, IS_DESIGNERS } from "../index.js";
+import { BOT_NAME, BUILD_TYPE, IS_DESIGNERS, EXPORT_XLSX_MONTH_USERS, AVAILABLE_USERS } from "../index.js";
 import { BUILD_TYPES } from "../constants.js";
 import cron from 'node-cron';
 import dailyGroupReport from './schedules/dailyGroupReport.js'
@@ -20,6 +20,17 @@ const tgBot = (token) => {
         if (BUILD_TYPE !== BUILD_TYPES.PROD) {
             console.log('msg');
             console.log(msg);
+        }
+
+        //EXPORT XLSX MONTH (доступ для AVAILABLE_USERS + EXPORT_XLSX_MONTH_USERS)/////////////////////////////////////////////
+        if (text === COMMAND.EXPORT_XLSX_MONTH || text === COMMAND.EXPORT_XLSX_MONTH + BOT_NAME) {
+            const username = msg?.from?.username;
+            if (AVAILABLE_USERS?.includes(username) || EXPORT_XLSX_MONTH_USERS?.includes(username)) {
+                await utils.exportXLSXMonth();
+            } else {
+                await utils.permissionValidator();
+            }
+            return;
         }
 
         //PERMISSION VALIDATOR////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,10 +92,6 @@ const tgBot = (token) => {
         if (text === COMMAND.DELETE_DAILY || text === COMMAND.DELETE_DAILY + BOT_NAME) {
             await task.delete();
             return;
-        }
-        if (text === COMMAND.EXPORT_XLSX_MONTH || text === COMMAND.EXPORT_XLSX_MONTH + BOT_NAME) {
-            await utils.exportXLSXMonth()
-            return
         }
         //ADD_TASK////////////////////////////////////////////////////////////////////////////////////////////////////
         if (text?.length >= 1 && !msg?.reply_to_message) {

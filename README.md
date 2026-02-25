@@ -12,5 +12,6 @@
 > AVAILABLE_USERS=DiChDev|dmman171|DiChLtd  
 > AVAILABLE_USERS_NAMES=Лид|Дима|ЛимТестовый  
 > GROUP_CHAT_ID=-7777777777
+> EXPORT_XLSX_MONTH_USERS=DiChDev|dmman171|
 
 ### ⚠️ The data is random and serves as an example only.
