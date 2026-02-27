@@ -35,10 +35,10 @@ const tgBot = (token) => {
             }).catch(() => { });
         }
 
-        //EXPORT XLSX MONTH (доступ для AVAILABLE_USERS + EXPORT_XLSX_USERS)/////////////////////////////////////////////
+        //EXPORT XLSX (доступ для AVAILABLE_USERS + EXPORT_XLSX_USERS)/////////////////////////////////////////////
         if (text === COMMAND.EXPORT_XLSX || text === COMMAND.EXPORT_XLSX + BOT_NAME) {
             if (AVAILABLE_USERS?.includes(username) || EXPORT_XLSX_USERS?.includes(username)) {
-                await utils.exportXLSXMonth();
+                await utils.exportXLSX();
             } else {
                 await utils.permissionValidator();
             }
@@ -97,8 +97,8 @@ const tgBot = (token) => {
             await utils.bugOnProd()
             return
         }
-        if (text === COMMAND.EXPORT_XLSX || text === COMMAND.EXPORT_XLSX + BOT_NAME) {
-            await utils.exportXLSX()
+        if (text === COMMAND.EXPORT_XLSX_MONTH || text === COMMAND.EXPORT_XLSX_MONTH + BOT_NAME) {
+            await utils.exportXLSXMonth()
             return
         }
         if (text === COMMAND.DELETE_DAILY || text === COMMAND.DELETE_DAILY + BOT_NAME) {
