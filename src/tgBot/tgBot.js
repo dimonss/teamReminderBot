@@ -1,5 +1,9 @@
 import TelegramApi from 'node-telegram-bot-api';
-import { COMMAND, tgBotDisplayCommands } from './constants/tgBotConstants.js';
+import {
+    COMMAND,
+    tgBotDisplayCommands,
+    exportXlsxOnlyCommands,
+} from './constants/tgBotConstants.js';
 import TgBotTaskImpl from './implementations/reqest/tgBotTaskImpl.js';
 import TgBotUtilsImpl from './implementations/reqest/tgBotUtilsImpl.js';
 import { BOT_NAME, BUILD_TYPE, IS_DESIGNERS, EXPORT_XLSX_MONTH_USERS, AVAILABLE_USERS } from "../index.js";
@@ -22,9 +26,17 @@ const tgBot = (token) => {
             console.log(msg);
         }
 
+        // Установка персонального меню для пользователей с доступом только к экспорту
+        const username = msg?.from?.username;
+        const isExportOnlyUser = EXPORT_XLSX_MONTH_USERS?.includes(username) && !AVAILABLE_USERS?.includes(username);
+        if (isExportOnlyUser) {
+            bot.setMyCommands(exportXlsxOnlyCommands, {
+                scope: { type: 'chat', chat_id: msg.chat.id }
+            }).catch(() => { });
+        }
+
         //EXPORT XLSX MONTH (доступ для AVAILABLE_USERS + EXPORT_XLSX_MONTH_USERS)/////////////////////////////////////////////
         if (text === COMMAND.EXPORT_XLSX_MONTH || text === COMMAND.EXPORT_XLSX_MONTH + BOT_NAME) {
-            const username = msg?.from?.username;
             if (AVAILABLE_USERS?.includes(username) || EXPORT_XLSX_MONTH_USERS?.includes(username)) {
                 await utils.exportXLSXMonth();
             } else {

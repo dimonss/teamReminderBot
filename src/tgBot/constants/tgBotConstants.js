@@ -13,15 +13,18 @@ export const COMMAND = {
 };
 
 export const tgBotDisplayCommands = [
-    {command: COMMAND.START, description: 'Запустить бота'},
-    {command: COMMAND.INFO, description: 'Информация дейлике'},
-    {command: COMMAND.REMIND, description: 'Тегнуть всех кто не написал дейлик'},
-    {command: COMMAND.REMIND_PRIVATE, description: 'Отписать в личку всем кто не написал дейлик'},
-    {command: COMMAND.TEG_ALL, description: 'Тегнуть всех участников команды'},
-    {command: COMMAND.BUG_ON_PROD, description: 'Баг на проде!!!'},
-    {command: COMMAND.BUG_ON_PRE_PROD, description: 'Баг на препроде!!!'},
-    {command: COMMAND.EXPORT_XLSX, description: 'Экспорт XLSX файла'},
-    {command: COMMAND.EXPORT_XLSX_MONTH, description: 'Экспорт XLSX за последний месяц'},
-    {command: COMMAND.DELETE_DAILY, description: 'Удалить сегодняшний дейлик'},
+    { command: COMMAND.START, description: 'Запустить бота' },
+    { command: COMMAND.INFO, description: 'Информация дейлике' },
+    { command: COMMAND.REMIND, description: 'Тегнуть всех кто не написал дейлик' },
+    { command: COMMAND.REMIND_PRIVATE, description: 'Отписать в личку всем кто не написал дейлик' },
+    { command: COMMAND.TEG_ALL, description: 'Тегнуть всех участников команды' },
+    { command: COMMAND.BUG_ON_PROD, description: 'Баг на проде!!!' },
+    { command: COMMAND.BUG_ON_PRE_PROD, description: 'Баг на препроде!!!' },
+    { command: COMMAND.EXPORT_XLSX, description: 'Экспорт XLSX файла' },
+    { command: COMMAND.EXPORT_XLSX_MONTH, description: 'Экспорт XLSX за последний месяц' },
+    { command: COMMAND.DELETE_DAILY, description: 'Удалить сегодняшний дейлик' },
+];
 
+export const exportXlsxOnlyCommands = [
+    { command: COMMAND.EXPORT_XLSX, description: 'Экспорт XLSX файла' },
 ];
