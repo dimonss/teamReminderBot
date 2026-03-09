@@ -115,7 +115,7 @@ const tgBot = (token) => {
     if (IS_DESIGNERS) {
         console.log("IS_DESIGNERS_SCHEDULE");
         cron.schedule('30 10 * * 1-5', dailyPrivateRemind)
-        cron.schedule('44 10 * * 1-5', dailyPublicRemind)
+        // cron.schedule('44 10 * * 1-5', dailyPublicRemind)// turn off dailyPublicRemind
         cron.schedule('3 11 * * 1-5', dailyGroupReport)
     }
     else {
