@@ -101,6 +101,10 @@ const tgBot = (token) => {
             await utils.exportXLSXMonth()
             return
         }
+        if (text === COMMAND.EXPORT_XLSX_WEEK || text === COMMAND.EXPORT_XLSX_WEEK + BOT_NAME) {
+            await utils.exportXLSXWeek()
+            return
+        }
         if (text === COMMAND.DELETE_DAILY || text === COMMAND.DELETE_DAILY + BOT_NAME) {
             await task.delete();
             return;

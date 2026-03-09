@@ -10,6 +10,7 @@ import {
 import { AVAILABLE_USERS } from "../../../index.js";
 import { downloadXLSXWithAlTasks } from "../../../utils/downloadXLSXWithAllTasks.js";
 import { downloadXLSXWithLastMonthTasks } from "../../../utils/downloadXLSXWithLastMonthTasks.js";
+import { downloadXLSXWithLastWeekTasks } from "../../../utils/downloadXLSXWithLastWeekTasks.js";
 
 class TgBotUtilsImpl {
     constructor(bot, msg) {
@@ -121,6 +122,10 @@ class TgBotUtilsImpl {
 
     async exportXLSXMonth() {
         downloadXLSXWithLastMonthTasks(null, { bot: this.bot, chatId: this.chatId, message_thread_id: this.message_thread_id });
+    }
+
+    async exportXLSXWeek() {
+        downloadXLSXWithLastWeekTasks(null, { bot: this.bot, chatId: this.chatId, message_thread_id: this.message_thread_id });
     }
 }
 

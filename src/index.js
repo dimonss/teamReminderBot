@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import UserSQL from "./db/userSQL.js";
 import { downloadXLSXWithAlTasks } from "./utils/downloadXLSXWithAllTasks.js";
 import { downloadXLSXWithLastMonthTasks } from "./utils/downloadXLSXWithLastMonthTasks.js";
+import { downloadXLSXWithLastWeekTasks } from "./utils/downloadXLSXWithLastWeekTasks.js";
 
 dotenv.config();
 
@@ -111,6 +112,18 @@ const startApp = async () => {
         try {
             if (checkAuth(req, res)) {
                 downloadXLSXWithLastMonthTasks({ res, next });
+            }
+        } catch (err) {
+            console.error('Error exporting data:', err);
+            res.status(500).send('Error exporting data');
+        }
+    });
+
+    // Маршрут для экспорта данных в XLSX за последнюю неделю
+    app.get('/export_xlsx_week', async (req, res, next) => {
+        try {
+            if (checkAuth(req, res)) {
+                downloadXLSXWithLastWeekTasks({ res, next });
             }
         } catch (err) {
             console.error('Error exporting data:', err);
