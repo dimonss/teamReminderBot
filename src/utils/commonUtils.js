@@ -2,6 +2,8 @@ import { commonDto } from '../DTO/common.js';
 import { STATUS } from '../constants.js';
 import { AUTH, AVAILABLE_USERS, AVAILABLE_USERS_NAMES, IS_DESIGNERS } from '../index.js';
 
+export const getAdmins = () => IS_DESIGNERS ? AVAILABLE_USERS.slice(0, 1) : AVAILABLE_USERS.slice(0, 2);
+
 export const checkAuth = (req, res) => {
     if (req?.headers?.authorization?.split(' ')[1] !== AUTH) {
         res.status(401).json(commonDto(STATUS.ERROR, 'error auth'));

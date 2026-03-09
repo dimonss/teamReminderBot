@@ -5,10 +5,12 @@ import userSQL from '../../db/userSQL.js';
 import { getRandomRequestMessageForPrivateEmptyDaily } from '../../utils/rangomStringsUtils.js';
 import { TELL_ME_THE_STATUS_STICKER } from '../../constants.js';
 import strings from '../../constants/strings.js';
+import { getAdmins } from '../../utils/commonUtils.js';
 
 const dailyPrivateRemind = async (data) => {
     try {
-        if (data?.username && data?.username !== AVAILABLE_USERS[0]) {
+        const admins = getAdmins();
+        if (data?.username && !admins.includes(data.username)) {
             await bot.sendMessage(GROUP_CHAT_ID, strings.command_not_available);
             return;
         }
@@ -16,7 +18,7 @@ const dailyPrivateRemind = async (data) => {
             if (error) {
                 return;
             }
-            let userList = AVAILABLE_USERS.slice(1); // Исключаем первого юзера
+            let userList = AVAILABLE_USERS.slice(admins.length); // Исключаем админов
             if (tasks.length) {
                 // Process all tasks and wait for all user data to be loaded
                 const processTasks = async () => {
@@ -70,7 +72,7 @@ const dailyPrivateRemind = async (data) => {
                 await processTasks();
             } else {
                 // No tasks at all, send reminders to all users
-                const sendPrivateMessages = AVAILABLE_USERS.slice(1).map((item) => {
+                const sendPrivateMessages = AVAILABLE_USERS.slice(admins.length).map((item) => {
                     return new Promise((resolve) => {
                         userSQL.getChatIdByUsername(item, async (error, data) => {
                             if (error || !data?.chatId) {

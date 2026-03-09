@@ -3,10 +3,12 @@ import { AVAILABLE_USERS, bot, GROUP_CHAT_ID } from '../../index.js';
 import strings from '../../constants/strings.js';
 import UserSQL from '../../db/userSQL.js';
 import { TELL_ME_THE_STATUS_STICKER, ZERO_BUGS_STICKER } from '../../constants.js';
+import { getAdmins } from '../../utils/commonUtils.js';
 
 const dailyPublicRemind = async (data) => {
     try {
-        if (data?.username && data?.username !== AVAILABLE_USERS[0]) {
+        const admins = getAdmins();
+        if (data?.username && !admins.includes(data.username)) {
             await bot.sendMessage(GROUP_CHAT_ID, strings.command_not_available, data.message_thread_id);
             return;
         }
@@ -15,7 +17,7 @@ const dailyPublicRemind = async (data) => {
                 await bot.sendMessage(GROUP_CHAT_ID, strings.ups, data.message_thread_id);
                 return;
             }
-            let userList = AVAILABLE_USERS.slice(1); // Исключаем первого юзера
+            let userList = AVAILABLE_USERS.slice(admins.length); // Исключаем админов
             if (tasks.length) {
                 // Process all tasks and wait for all user data to be loaded
                 const processTasks = async () => {
@@ -51,7 +53,7 @@ const dailyPublicRemind = async (data) => {
 
                 await processTasks();
             } else {
-                const responseMessage = AVAILABLE_USERS.slice(1).reduce((acc, item) => acc + '@' + item + ' ', '');
+                const responseMessage = AVAILABLE_USERS.slice(admins.length).reduce((acc, item) => acc + '@' + item + ' ', '');
                 await bot.sendSticker(GROUP_CHAT_ID, TELL_ME_THE_STATUS_STICKER, data.message_thread_id);
                 await bot.sendMessage(GROUP_CHAT_ID, responseMessage, data.message_thread_id);
             }
