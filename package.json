@@ -13,7 +13,8 @@
     "start:designer_prod": "pm2 start src/index.js --name designer_daily_bot",
     "start:flutter_prod": "pm2 start src/index.js --name flutter_daily_bot",
     "lint": "npx eslint ./src",
-    "format": "npx eslint ./src --fix"
+    "format": "npx eslint ./src --fix",
+    "export:xlsx_by_db": "node scripts/exportXLSXFromDB.js db.sqlite"
   },
   "repository": {
     "type": "git",
