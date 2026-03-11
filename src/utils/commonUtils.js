@@ -1,8 +1,8 @@
 import { commonDto } from '../DTO/common.js';
 import { STATUS } from '../constants.js';
-import { AUTH, AVAILABLE_USERS, AVAILABLE_USERS_NAMES, IS_DESIGNERS } from '../index.js';
+import { AUTH, AVAILABLE_USERS, AVAILABLE_USERS_NAMES, IS_FLUTTER } from '../index.js';
 
-export const getAdmins = () => IS_DESIGNERS ? AVAILABLE_USERS.slice(0, 1) : AVAILABLE_USERS.slice(0, 2);
+export const getAdmins = () => IS_FLUTTER ? AVAILABLE_USERS.slice(0, 1) : AVAILABLE_USERS.slice(0, 2);
 
 export const checkAuth = (req, res) => {
     if (req?.headers?.authorization?.split(' ')[1] !== AUTH) {
@@ -74,8 +74,8 @@ export const isGroupReportTimePassed = () => {
 
     // Check if we're past the group report time
     // For designers: 11:03, for regular: 9:15
-    const reportHour = IS_DESIGNERS ? 11 : 9;
-    const reportMinute = IS_DESIGNERS ? 3 : 15;
+    const reportHour = IS_FLUTTER ? 9 : 9;
+    const reportMinute = IS_FLUTTER ? 15 : 15;
 
     const currentTimeInMinutes = currentHour * 60 + currentMinute;
     const reportTimeInMinutes = reportHour * 60 + reportMinute;

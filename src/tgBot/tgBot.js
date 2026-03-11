@@ -6,7 +6,7 @@ import {
 } from './constants/tgBotConstants.js';
 import TgBotTaskImpl from './implementations/reqest/tgBotTaskImpl.js';
 import TgBotUtilsImpl from './implementations/reqest/tgBotUtilsImpl.js';
-import { BOT_NAME, BUILD_TYPE, IS_DESIGNERS, EXPORT_XLSX_USERS, AVAILABLE_USERS } from "../index.js";
+import { BOT_NAME, BUILD_TYPE, IS_FLUTTER, EXPORT_XLSX_USERS, AVAILABLE_USERS } from "../index.js";
 import { BUILD_TYPES } from "../constants.js";
 import cron from 'node-cron';
 import dailyGroupReport from './schedules/dailyGroupReport.js'
@@ -116,16 +116,16 @@ const tgBot = (token) => {
 
     });
 
-    if (IS_DESIGNERS) {
-        console.log("IS_DESIGNERS_SCHEDULE");
+    if (IS_FLUTTER) {
+        console.log("IS_FLUTTER_SCHEDULE");
         cron.schedule('30 10 * * 1-5', dailyPrivateRemind)
-        // cron.schedule('44 10 * * 1-5', dailyPublicRemind)// turn off dailyPublicRemind
+        cron.schedule('44 10 * * 1-5', dailyPublicRemind)// turn off dailyPublicRemind
         cron.schedule('3 11 * * 1-5', dailyGroupReport)
     }
     else {
         console.log("IS_REGULAR_SCHEDULE");
         cron.schedule('0 9 * * 1-5', dailyPrivateRemind)
-        cron.schedule('10 9 * * 1-5', dailyPublicRemind)
+        //cron.schedule('10 9 * * 1-5', dailyPublicRemind)// turn off dailyPublicRemind
         cron.schedule('15 9 * * 1-5', dailyGroupReport)
     }
 
