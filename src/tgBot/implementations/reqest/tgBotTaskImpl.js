@@ -40,7 +40,7 @@ class TgBotTaskImpl {
                                         );
                                         return
                                     }
-                                    if (this.text.length > 400) {
+                                    if (this.text.length > 560) {
                                         await this.bot.sendMessage(
                                             this.chatId,
                                             strings.soLong,
@@ -68,7 +68,7 @@ class TgBotTaskImpl {
                                         );
                                         return
                                     }
-                                    if (this.text.length > 400) {
+                                    if (this.text.length > 560) {
                                         await this.bot.sendMessage(
                                             this.chatId,
                                             strings.soLong,
