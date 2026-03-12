@@ -73,7 +73,6 @@ export const isGroupReportTimePassed = () => {
     const currentMinute = adjustedTime.getMinutes();
 
     // Check if we're past the group report time
-    // For designers: 11:03, for regular: 9:15
     const reportHour = IS_FLUTTER ? 9 : 9;
     const reportMinute = IS_FLUTTER ? 15 : 15;
 
