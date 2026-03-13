@@ -22,6 +22,7 @@ export const AVAILABLE_USERS_NAMES = process.env.AVAILABLE_USERS_NAMES?.split("|
 export const EXPORT_XLSX_USERS = process.env.EXPORT_XLSX_USERS?.split("|") || [];
 export const GROUP_CHAT_ID = process.env.GROUP_CHAT_ID;
 export const IS_FLUTTER = process.env.IS_FLUTTER || false;
+export const BOT_TIMEZONE = process.env.BOT_TIMEZONE || 'Asia/Bishkek';
 const PORT = process.env.PORT || 4000;
 
 const app = express();

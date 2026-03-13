@@ -1,6 +1,6 @@
 import { commonDto } from '../DTO/common.js';
 import { STATUS } from '../constants.js';
-import { AUTH, AVAILABLE_USERS, AVAILABLE_USERS_NAMES, IS_FLUTTER } from '../index.js';
+import { AUTH, AVAILABLE_USERS, AVAILABLE_USERS_NAMES, IS_FLUTTER, BOT_TIMEZONE } from '../index.js';
 
 export const getAdmins = () => IS_FLUTTER ? AVAILABLE_USERS.slice(0, 1) : AVAILABLE_USERS.slice(0, 2);
 
@@ -12,28 +12,39 @@ export const checkAuth = (req, res) => {
     return true;
 };
 
-const addHours = (date, hours) => {
-    date.setHours(date.getHours() + hours);
-    return date;
+const getLocalDateParts = (date = new Date()) => {
+    const formatter = new Intl.DateTimeFormat('en-GB', {
+        timeZone: BOT_TIMEZONE,
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false
+    });
+
+    const parts = formatter.formatToParts(date);
+    const timeObj = {};
+    for (const part of parts) {
+        if (part.type !== 'literal') {
+            timeObj[part.type] = parseInt(part.value, 10);
+        }
+    }
+    return timeObj;
 };
 
 export const getCurrentDate = () => {
-    const currentDateUTC = new Date();
+    let targetDate = new Date();
+    let parts = getLocalDateParts(targetDate);
 
-    // Get UTC hours and add 6 to get local hours
-    const utcHours = currentDateUTC.getUTCHours();
-    const localHours = (utcHours + 6) % 24;
-
-    // If after 16:00 local time, add 8 hours to UTC (which gives us +14 total from UTC)
-    // If before 16:00 local time, just use +6 from UTC
-    const timeOffset = localHours >= 16 ? 14 : 6;
-    const adjustedTime = addHours(new Date(currentDateUTC), timeOffset);
+    // If after 16:00 local time, it is considered the next day
+    if (parts.hour >= 16) {
+        targetDate.setUTCDate(targetDate.getUTCDate() + 1);
+        parts = getLocalDateParts(targetDate);
+    }
 
     // Use format without leading zeros to match existing database records
-    const day = adjustedTime.getDate();
-    const month = adjustedTime.getMonth() + 1;
-    const year = adjustedTime.getFullYear();
-    return `${day}.${month}.${year}`;
+    return `${parts.day}.${parts.month}.${parts.year}`;
 };
 
 export const getCyrillicUsername = (username) => {
@@ -41,16 +52,17 @@ export const getCyrillicUsername = (username) => {
 }
 
 export const getLastMonthDateRange = () => {
-    const now = addHours(new Date(), 6);
-    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const { year, month, day } = getLocalDateParts();
+    // month is 1-12 in Intl format, but Date constructor expects 0-base for month
+    const end = new Date(year, month - 1, day);
     const start = new Date(end);
     start.setMonth(start.getMonth() - 1);
     return { start, end };
 }
 
 export const getLastWeekDateRange = () => {
-    const now = addHours(new Date(), 6);
-    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const { year, month, day } = getLocalDateParts();
+    const end = new Date(year, month - 1, day);
     const start = new Date(end);
     start.setDate(start.getDate() - 7);
     return { start, end };
@@ -62,21 +74,19 @@ export const parseDate = (dateStr) => {
 }
 
 export const isGroupReportTimePassed = () => {
-    const currentDateUTC = new Date();
-    const utcHours = currentDateUTC.getUTCHours();
-    const localHours = (utcHours + 6) % 24;
+    const { hour, minute } = getLocalDateParts();
 
-    // Get current time in local timezone
-    const timeOffset = localHours >= 16 ? 14 : 6;
-    const adjustedTime = addHours(new Date(currentDateUTC), timeOffset);
-    const currentHour = adjustedTime.getHours();
-    const currentMinute = adjustedTime.getMinutes();
+    // If it's 16:00 or later, it's considered the reporting period for the next day.
+    // Therefore, the 09:15 deadline has not passed yet.
+    if (hour >= 16) {
+        return false;
+    }
 
     // Check if we're past the group report time
     const reportHour = IS_FLUTTER ? 9 : 9;
     const reportMinute = IS_FLUTTER ? 15 : 15;
 
-    const currentTimeInMinutes = currentHour * 60 + currentMinute;
+    const currentTimeInMinutes = hour * 60 + minute;
     const reportTimeInMinutes = reportHour * 60 + reportMinute;
 
     return currentTimeInMinutes > reportTimeInMinutes;
