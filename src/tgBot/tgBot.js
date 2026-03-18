@@ -6,7 +6,7 @@ import {
 } from './constants/tgBotConstants.js';
 import TgBotTaskImpl from './implementations/reqest/tgBotTaskImpl.js';
 import TgBotUtilsImpl from './implementations/reqest/tgBotUtilsImpl.js';
-import { BOT_NAME, BUILD_TYPE, IS_FLUTTER, EXPORT_XLSX_USERS, AVAILABLE_USERS } from "../index.js";
+import { BOT_NAME, BUILD_TYPE, IS_FLUTTER, EXPORT_XLSX_USERS, AVAILABLE_USERS, BOT_TIMEZONE } from "../index.js";
 import { BUILD_TYPES } from "../constants.js";
 import cron from 'node-cron';
 import dailyGroupReport from './schedules/dailyGroupReport.js'
@@ -118,16 +118,16 @@ const tgBot = (token) => {
 
     if (IS_FLUTTER) {
         console.log("IS_FLUTTER_SCHEDULE");
-        cron.schedule('30 17 * * 1-5', dailyPrivateRemind)
-        cron.schedule('30 17 * * 1-5', dailyPublicRemind)
-        cron.schedule('15 9 * * 1-5', dailyGroupReport)
+        cron.schedule('30 17 * * 1-5', dailyPrivateRemind, { timezone: BOT_TIMEZONE })
+        cron.schedule('30 17 * * 1-5', dailyPublicRemind, { timezone: BOT_TIMEZONE })
+        cron.schedule('15 9 * * 1-5', dailyGroupReport, { timezone: BOT_TIMEZONE })
 
     }
     else {
         console.log("IS_REGULAR_SCHEDULE");
-        cron.schedule('0 9 * * 1-5', dailyPrivateRemind)
+        cron.schedule('0 9 * * 1-5', dailyPrivateRemind, { timezone: BOT_TIMEZONE })
         //cron.schedule('10 9 * * 1-5', dailyPublicRemind)// turn off dailyPublicRemind
-        cron.schedule('15 9 * * 1-5', dailyGroupReport)
+        cron.schedule('15 9 * * 1-5', dailyGroupReport, { timezone: BOT_TIMEZONE })
     }
 
 
