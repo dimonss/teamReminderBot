@@ -8,12 +8,14 @@ import TgBotTaskImpl from './implementations/reqest/tgBotTaskImpl.js';
 import TgBotUtilsImpl from './implementations/reqest/tgBotUtilsImpl.js';
 import { BOT_NAME, BUILD_TYPE, IS_FLUTTER, EXPORT_XLSX_USERS, AVAILABLE_USERS, BOT_TIMEZONE } from "../index.js";
 import { BUILD_TYPES } from "../constants.js";
+import strings from "../constants/strings.js";
 import cron from 'node-cron';
 import dailyGroupReport from './schedules/dailyGroupReport.js'
 import dailyPublicRemind from "./schedules/dailyPublicRemind.js";
 import dailyPrivateRemind from "./schedules/dailyPrivateRemind.js";
 
 const tgBot = (token) => {
+    if (!token) return null;
     const bot = new TelegramApi(token, { polling: true });
     bot.setMyCommands(tgBotDisplayCommands).then();
     bot.on('message', async (msg) => {
@@ -48,6 +50,20 @@ const tgBot = (token) => {
         //PERMISSION VALIDATOR////////////////////////////////////////////////////////////////////////////////////////////////////
         if (text) {
             if (await utils.permissionValidator()) return;
+        }
+
+        // CANCEL EDITING SESSION //////////////////////////////////////////////////////////////////////////////////
+        if (text === '/cancel' || text?.toLowerCase() === 'отмена') {
+            if (TgBotTaskImpl.hasEditSession(msg.chat.id)) {
+                TgBotTaskImpl.clearEditSession(msg.chat.id);
+                await bot.sendMessage(msg.chat.id, strings.edit_cancelled);
+                return;
+            }
+        }
+
+        // Clear edit session on any command so user is never trapped in edit mode
+        if (text?.startsWith('/')) {
+            TgBotTaskImpl.clearEditSession(msg.chat.id);
         }
 
         //COMMON////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,11 +125,33 @@ const tgBot = (token) => {
             await task.delete();
             return;
         }
+        if (text === COMMAND.EDIT_DAILY || text === COMMAND.EDIT_DAILY + BOT_NAME) {
+            await task.edit();
+            return;
+        }
+
+        //EDIT_TASK MESSAGE///////////////////////////////////////////////////////////////////////////////////////////
+        if (TgBotTaskImpl.hasEditSession(msg.chat.id)) {
+            const handled = await task.handleEditMessage();
+            if (handled) return;
+        }
+
         //ADD_TASK////////////////////////////////////////////////////////////////////////////////////////////////////
         if (text?.length >= 1 && !msg?.reply_to_message) {
             await task.add();
         }
 
+    });
+
+    bot.on('callback_query', async (query) => {
+        if (AVAILABLE_USERS.indexOf(query.from?.username) === -1) {
+            await bot.answerCallbackQuery(query.id, {
+                text: strings.you_do_not_have_access_to_this_bot,
+                show_alert: true,
+            }).catch(() => {});
+            return;
+        }
+        await TgBotTaskImpl.handleCallback(bot, query);
     });
 
     if (IS_FLUTTER) {

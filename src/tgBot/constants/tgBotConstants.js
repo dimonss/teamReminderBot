@@ -9,6 +9,7 @@ export const COMMAND = {
     BUG_ON_PRE_PROD: '/bug_on_pre_prod',
     EXPORT_XLSX: '/export_xlsx',
     DELETE_DAILY: '/delete_daily',
+    EDIT_DAILY: '/edit_daily',
     EXPORT_XLSX_MONTH: '/export_xlsx_month',
     EXPORT_XLSX_WEEK: '/export_xlsx_week',
 };
@@ -24,8 +25,18 @@ export const tgBotDisplayCommands = [
     { command: COMMAND.EXPORT_XLSX, description: 'Экспорт XLSX файла' },
     { command: COMMAND.EXPORT_XLSX_MONTH, description: 'Экспорт XLSX за последний месяц' },
     { command: COMMAND.EXPORT_XLSX_WEEK, description: 'Экспорт XLSX за последнюю неделю' },
+    { command: COMMAND.EDIT_DAILY, description: 'Редактировать сегодняшний дейлик' },
     { command: COMMAND.DELETE_DAILY, description: 'Удалить сегодняшний дейлик' },
 ];
+
+export const CALLBACK_ACTIONS = {
+    EDIT_DAILY: 'action_edit_daily',
+    DELETE_DAILY: 'action_delete_daily',
+    EDIT_YESTERDAY: 'edit_part_yesterday',
+    EDIT_TODAY: 'edit_part_today',
+    EDIT_BOTH: 'edit_part_both',
+    EDIT_CANCEL: 'edit_part_cancel',
+};
 
 export const exportXlsxOnlyCommands = [
     { command: COMMAND.EXPORT_XLSX, description: 'Экспорт XLSX файла' },

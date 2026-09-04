@@ -42,16 +42,52 @@ class TaskSQL {
         );
     }
 
-//not used
+    static updateYesterdayTask(data, cb) {
+        const sql =
+            'UPDATE task SET yesterday = ? WHERE (userId = ? AND date = ?)';
+        db.run(
+            sql,
+            data.text,
+            data.userId,
+            data.date || getCurrentDate(),
+            cb,
+        );
+    }
+
+    static updateTodayTask(data, cb) {
+        const sql =
+            'UPDATE task SET today = ? WHERE (userId = ? AND date = ?)';
+        db.run(
+            sql,
+            data.text,
+            data.userId,
+            data.date || getCurrentDate(),
+            cb,
+        );
+    }
+
+    static updateBothTask(data, cb) {
+        const sql =
+            'UPDATE task SET yesterday = ?, today = ? WHERE (userId = ? AND date = ?)';
+        db.run(
+            sql,
+            data.yesterday,
+            data.today,
+            data.userId,
+            data.date || getCurrentDate(),
+            cb,
+        );
+    }
+
     static updateTask(data, cb) {
         const sql =
-            'UPDATE task SET today = ? yesterday = ? WHERE (userId = ? AND date = ?)';
+            'UPDATE task SET today = ?, yesterday = ? WHERE (userId = ? AND date = ?)';
         db.run(
             sql,
             data.textToday,
             data.yesterday,
             data.userId,
-            data.date,
+            data.date || getCurrentDate(),
             cb,
         );
     }

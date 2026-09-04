@@ -11,6 +11,8 @@ import { AVAILABLE_USERS } from "../../../index.js";
 import { downloadXLSXWithAlTasks } from "../../../utils/downloadXLSXWithAllTasks.js";
 import { downloadXLSXWithLastMonthTasks } from "../../../utils/downloadXLSXWithLastMonthTasks.js";
 import { downloadXLSXWithLastWeekTasks } from "../../../utils/downloadXLSXWithLastWeekTasks.js";
+import { isGroupReportTimePassed } from "../../../utils/commonUtils.js";
+import { getDailyActionButtons } from "./tgBotTaskImpl.js";
 
 class TgBotUtilsImpl {
     constructor(bot, msg) {
@@ -59,10 +61,11 @@ class TgBotUtilsImpl {
                             return;
                         }
                         if (taskData?.yesterday || taskData?.today) {
+                            const actionButtons = !isGroupReportTimePassed() ? getDailyActionButtons() : {};
                             await this.bot.sendMessage(
                                 this.chatId,
                                 `<b>Что делал:</b>\n${taskData.yesterday}\n\n<b>Что буду делать:</b>\n${taskData.today || strings.empty + "\n" + strings.send_a_message_and_it_will_be_added_here}`,
-                                { parse_mode: 'HTML', ...this.message_thread_id },
+                                { parse_mode: 'HTML', ...actionButtons, ...this.message_thread_id },
                             );
                         } else {
 
