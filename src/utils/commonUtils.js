@@ -20,13 +20,16 @@ const getLocalDateParts = (date = new Date()) => {
         day: 'numeric',
         hour: 'numeric',
         minute: 'numeric',
-        hour12: false
+        hour12: false,
+        weekday: 'short'
     });
 
     const parts = formatter.formatToParts(date);
     const timeObj = {};
     for (const part of parts) {
-        if (part.type !== 'literal') {
+        if (part.type === 'weekday') {
+            timeObj.weekday = part.value;
+        } else if (part.type !== 'literal') {
             timeObj[part.type] = parseInt(part.value, 10);
         }
     }
@@ -37,8 +40,14 @@ export const getCurrentDate = () => {
     let targetDate = new Date();
     let parts = getLocalDateParts(targetDate);
 
-    // If after 16:00 local time, it is considered the next day
+    // If after 16:00 local time, it is considered the next reporting day
     if (parts.hour >= 16) {
+        targetDate.setUTCDate(targetDate.getUTCDate() + 1);
+        parts = getLocalDateParts(targetDate);
+    }
+
+    // If the target day falls on a weekend, shift to Monday
+    while (parts.weekday === 'Sat' || parts.weekday === 'Sun') {
         targetDate.setUTCDate(targetDate.getUTCDate() + 1);
         parts = getLocalDateParts(targetDate);
     }
@@ -74,11 +83,11 @@ export const parseDate = (dateStr) => {
 }
 
 export const isGroupReportTimePassed = () => {
-    const { hour, minute } = getLocalDateParts();
+    const { hour, minute, weekday } = getLocalDateParts();
 
-    // If it's 16:00 or later, it's considered the reporting period for the next day.
+    // On weekends or after 16:00 on weekdays, it's the reporting period for the next work day.
     // Therefore, the 09:15 deadline has not passed yet.
-    if (hour >= 16) {
+    if (weekday === 'Sat' || weekday === 'Sun' || hour >= 16) {
         return false;
     }
 

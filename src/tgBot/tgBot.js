@@ -163,8 +163,8 @@ const tgBot = (token) => {
     }
     else {
         console.log("IS_REGULAR_SCHEDULE");
-        cron.schedule('0 9 * * 1-5', dailyPrivateRemind, { timezone: BOT_TIMEZONE })
-        //cron.schedule('10 9 * * 1-5', dailyPublicRemind)// turn off dailyPublicRemind
+        cron.schedule('30 16 * * 1-5', dailyPrivateRemind, { timezone: BOT_TIMEZONE })
+        cron.schedule('10 9 * * 1-5', dailyPublicRemind, { timezone: BOT_TIMEZONE })
         cron.schedule('15 9 * * 1-5', dailyGroupReport, { timezone: BOT_TIMEZONE })
     }
 
